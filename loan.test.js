@@ -14,6 +14,7 @@ const {
   isValidEmiratesId,
   isValidUaeMobile,
   normalizeMobile,
+  groupThousands,
   prettyMobile,
   validateApplication,
 } = sandbox.LoanForm;
@@ -46,6 +47,14 @@ test("formats a UAE mobile number as +971 5X XXX XXXX", () => {
   assert.equal(formatUaeMobile("501234567"), "+971 50 123 4567");
   assert.equal(isValidUaeMobile("+971 50 123 4567"), true);
   assert.equal(isValidUaeMobile("043123456"), false);
+});
+
+test("groups dirham amounts with thousand separators", () => {
+  assert.equal(groupThousands("3535353535"), "3,535,353,535");
+  assert.equal(groupThousands("4546"), "4,546");
+  assert.equal(groupThousands("3000"), "3,000");
+  assert.equal(groupThousands("3,000"), "3,000");
+  assert.equal(groupThousands(""), "");
 });
 
 test("accepts a complete application at the income minimum", () => {

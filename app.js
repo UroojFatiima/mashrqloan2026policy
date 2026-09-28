@@ -2,8 +2,8 @@ const {
   LOAN_CATEGORIES,
   formatEmiratesId,
   formatMoney,
-  formatPlain,
   formatUaeMobile,
+  groupThousands,
   isBlank,
   prettyMobile,
   validateApplication,
@@ -164,10 +164,13 @@ function normalizeSubscriberCount(value) {
   return formatUaeMobile(value).replace("+971", "").replace(/\D/g, "").length;
 }
 
+function formatMoneyField(input) {
+  formatKeepingCaret(input, groupThousands);
+}
+
 function onMoneyBlur(input) {
   if (isBlank(input.value)) return;
-  const amount = wholeDirhams(input.value);
-  if (Number.isFinite(amount)) input.value = formatPlain(amount);
+  input.value = groupThousands(input.value);
 }
 
 function saveDraft() {
@@ -185,6 +188,8 @@ function restore() {
     if (!data || typeof data !== "object") return;
     if (data.emiratesId) data.emiratesId = formatEmiratesId(data.emiratesId);
     if (data.phone) data.phone = prettyMobile(data.phone);
+    if (data.monthlyIncome) data.monthlyIncome = groupThousands(data.monthlyIncome);
+    if (data.loanAmount) data.loanAmount = groupThousands(data.loanAmount);
     for (const [key, value] of Object.entries(data)) writeField(key, value);
   } catch {
     sessionStorage.removeItem(DRAFT_KEY);
@@ -391,11 +396,20 @@ function bindForm() {
   phone.addEventListener("paste", () => window.setTimeout(formatPhone, 0));
   phone.addEventListener("blur", formatPhone);
 
+  for (const money of form.querySelectorAll("[data-money]")) {
+    const formatAmount = () => formatMoneyField(money);
+    money.addEventListener("input", formatAmount);
+    money.addEventListener("keyup", formatAmount);
+    money.addEventListener("paste", () => window.setTimeout(formatAmount, 0));
+    money.addEventListener("blur", formatAmount);
+  }
+
   form.addEventListener("input", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement) || !("name" in target)) return;
     if (target.name === "emiratesId") formatEmiratesIdField(target);
     if (target.name === "phone") formatPhoneField(target);
+    if (target instanceof HTMLInputElement && target.dataset.money != null) formatMoneyField(target);
     if (target.name) {
       const wrap = form.querySelector(`[data-field="${CSS.escape(target.name)}"]`);
       wrap?.classList.remove("invalid");
@@ -413,13 +427,6 @@ function bindForm() {
     const target = event.target;
     if (target instanceof HTMLInputElement && target.dataset.money != null) onMoneyBlur(target);
     if (target instanceof HTMLInputElement && target.name === "phone") target.value = prettyMobile(target.value);
-  });
-
-  form.addEventListener("focusin", (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement) || target.dataset.money == null || isBlank(target.value)) return;
-    const amount = wholeDirhams(target.value);
-    if (Number.isFinite(amount)) target.value = String(amount);
   });
 
   form.addEventListener("submit", (event) => {

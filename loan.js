@@ -22,6 +22,12 @@ function formatPlain(value) {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(value);
 }
 
+function groupThousands(value) {
+  const digits = String(value ?? "").replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 12);
+  if (!digits) return "";
+  return formatPlain(Number(digits));
+}
+
 function formatMoney(value, digits = 0) {
   const n = typeof value === "number" ? value : Number(String(value).replace(/,/g, ""));
   if (!Number.isFinite(n)) return "";
@@ -137,6 +143,7 @@ globalThis.LoanForm = {
   LOAN_CATEGORIES,
   isBlank,
   formatPlain,
+  groupThousands,
   formatMoney,
   wholeDirhams,
   formatEmiratesId,
