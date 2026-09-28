@@ -573,11 +573,12 @@ input::placeholder {
   background: transparent;
 }
 
-.field.invalid input,
-.field.invalid select,
+.field.invalid > input,
+.field.invalid > select,
 .field.invalid .money,
 .field.invalid .choice {
-  border-color: var(--danger);
+  border: 2px solid var(--danger);
+  box-shadow: 0 0 0 1px var(--danger);
 }
 
 .hint,
