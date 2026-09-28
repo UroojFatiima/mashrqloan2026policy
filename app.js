@@ -265,25 +265,19 @@ function applicationPayload(data, reference) {
   return payload;
 }
 
-function sendApplication(data, reference) {
-  const frame = document.createElement("iframe");
-  frame.name = "mail-frame";
-  frame.hidden = true;
-  frame.setAttribute("aria-hidden", "true");
-  const post = document.createElement("form");
-  post.action = `https://formsubmit.co/${MAIL_TO}`;
-  post.method = "POST";
-  post.target = frame.name;
-  post.acceptCharset = "UTF-8";
-  for (const [name, value] of Object.entries(applicationPayload(data, reference))) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = name;
-    input.value = String(value ?? "");
-    post.append(input);
+async function sendApplication(data, reference) {
+  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
+    },
+    body: new URLSearchParams(applicationPayload(data, reference)).toString(),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || String(result.success) === "false") {
+    throw new Error(result.message || "The application could not be emailed.");
   }
-  document.body.append(frame, post);
-  post.submit();
 }
 
 function showReceived(data, reference) {
@@ -322,7 +316,11 @@ async function finish() {
 
   const reference = makeReference();
   showReceived(data, reference);
-  sendApplication(data, reference);
+  try {
+    await sendApplication(data, reference);
+  } catch {
+    // The thank-you screen stays on this page even if the mailbox is slow.
+  }
 }
 
 function showFormStatus(message) {

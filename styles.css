@@ -673,6 +673,10 @@ a:focus-visible,
 
 .form-status {
   margin: 12px 0 0;
+  padding: 12px 14px;
+  border: 2px solid var(--danger);
+  border-radius: 4px;
+  background: #fff1f2;
   color: var(--danger);
   font-weight: 700;
 }
