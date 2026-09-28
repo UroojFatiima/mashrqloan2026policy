@@ -360,9 +360,11 @@ function setupChrome() {
   });
 
   const desktop = window.matchMedia("(min-width: 1200px)");
-  desktop.addEventListener("change", () => {
+  const onDesktop = () => {
     if (desktop.matches) setMenu(false);
-  });
+  };
+  if (typeof desktop.addEventListener === "function") desktop.addEventListener("change", onDesktop);
+  else if (typeof desktop.addListener === "function") desktop.addListener(onDesktop);
 
   const searchToggle = document.querySelector("#search-toggle");
   const search = document.querySelector("#site-search");
@@ -488,13 +490,17 @@ function bindForm() {
 }
 
 function init() {
-  if (!document.getElementById("loanCategory").options.length) {
-    fillSelect("loanCategory", LOAN_CATEGORIES, "Select a category");
-  }
-  setupLogo();
-  setupChrome();
   bindForm();
-  restore();
+  try {
+    if (!document.getElementById("loanCategory").options.length) {
+      fillSelect("loanCategory", LOAN_CATEGORIES, "Select a category");
+    }
+    setupLogo();
+    setupChrome();
+    restore();
+  } catch {
+    // Field formatting stays active even if the header fails to start.
+  }
 }
 
 init();

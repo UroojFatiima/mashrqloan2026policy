@@ -25,7 +25,7 @@ function formatPlain(value) {
 function groupThousands(value) {
   const digits = String(value ?? "").replace(/\D/g, "").replace(/^0+(?=\d)/, "").slice(0, 12);
   if (!digits) return "";
-  return formatPlain(Number(digits));
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function formatMoney(value, digits = 0) {
