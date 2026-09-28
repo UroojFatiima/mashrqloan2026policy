@@ -3,7 +3,7 @@ const {
   formatEmiratesId,
   formatMoney,
   formatPlain,
-  groupMobile,
+  formatUaeMobile,
   isBlank,
   prettyMobile,
   validateApplication,
@@ -128,6 +128,40 @@ function formatKeepingCaret(input, formatter) {
 
 function formatEmiratesIdField(input) {
   formatKeepingCaret(input, formatEmiratesId);
+}
+
+function formatPhoneField(input) {
+  const start = input.selectionStart ?? input.value.length;
+  const digitsBefore = normalizeSubscriberCount(input.value.slice(0, start));
+  const formatted = formatUaeMobile(input.value);
+  input.value = formatted;
+  if (document.activeElement !== input) return;
+  let caret = formatted.length;
+  if (digitsBefore === 0) {
+    caret = formatted.startsWith("+971 ") ? 5 : formatted.length;
+  } else {
+    let countryDigits = 0;
+    let subscriberSeen = 0;
+    for (let i = 0; i < formatted.length; i += 1) {
+      if (!/\d/.test(formatted[i])) continue;
+      countryDigits += 1;
+      if (countryDigits <= 3) continue;
+      subscriberSeen += 1;
+      if (subscriberSeen === digitsBefore) {
+        caret = i + 1;
+        break;
+      }
+    }
+  }
+  try {
+    input.setSelectionRange(caret, caret);
+  } catch {
+    // The caret cannot move while the field is not focused.
+  }
+}
+
+function normalizeSubscriberCount(value) {
+  return formatUaeMobile(value).replace("+971", "").replace(/\D/g, "").length;
 }
 
 function onMoneyBlur(input) {
@@ -346,19 +380,22 @@ function bindForm() {
   emiratesId.addEventListener("paste", () => window.setTimeout(formatId, 0));
   emiratesId.addEventListener("blur", formatId);
 
+  const phone = document.getElementById("phone");
+  const formatPhone = () => formatPhoneField(phone);
+  phone.addEventListener("focus", () => {
+    if (isBlank(phone.value)) phone.value = "+971 ";
+    formatPhone();
+  });
+  phone.addEventListener("input", formatPhone);
+  phone.addEventListener("keyup", formatPhone);
+  phone.addEventListener("paste", () => window.setTimeout(formatPhone, 0));
+  phone.addEventListener("blur", formatPhone);
+
   form.addEventListener("input", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement) || !("name" in target)) return;
     if (target.name === "emiratesId") formatEmiratesIdField(target);
-    if (target.name === "phone") {
-      const digits = target.value.replace(/\D/g, "");
-      if (digits.startsWith("0")) {
-        formatKeepingCaret(target, (value) => groupMobile(value.replace(/\D/g, "").slice(0, 10)));
-      } else {
-        const cleaned = target.value.replace(/[^\d+\s]/g, "");
-        if (cleaned !== target.value) target.value = cleaned;
-      }
-    }
+    if (target.name === "phone") formatPhoneField(target);
     if (target.name) {
       const wrap = form.querySelector(`[data-field="${CSS.escape(target.name)}"]`);
       wrap?.classList.remove("invalid");

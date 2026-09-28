@@ -10,7 +10,7 @@ vm.runInContext(fs.readFileSync(new URL("./loan.js", import.meta.url), "utf8"), 
 const {
   LIMITS,
   formatEmiratesId,
-  groupMobile,
+  formatUaeMobile,
   isValidEmiratesId,
   isValidUaeMobile,
   normalizeMobile,
@@ -23,7 +23,7 @@ function validApplication(overrides = {}) {
     fullName: "Noor Ali",
     loanCategory: "Personal loan",
     emiratesId: "784-1992-1234567-1",
-    phone: "050 123 4567",
+    phone: "+971 50 123 4567",
     email: "noor@example.com",
     monthlyIncome: "3000",
     loanAmount: "50000",
@@ -39,11 +39,12 @@ test("formats a 15-digit Emirates ID as 784-XXXX-XXXXXXX-X", () => {
   assert.equal(isValidEmiratesId("784-1992-123456-1"), false);
 });
 
-test("accepts UAE mobile numbers and groups them", () => {
-  assert.equal(normalizeMobile("+971 50 123 4567"), "0501234567");
-  assert.equal(groupMobile("0501234567"), "050 123 4567");
-  assert.equal(prettyMobile("971501234567"), "050 123 4567");
-  assert.equal(isValidUaeMobile("0501234567"), true);
+test("formats a UAE mobile number as +971 5X XXX XXXX", () => {
+  assert.equal(normalizeMobile("+971 50 123 4567"), "501234567");
+  assert.equal(formatUaeMobile("0501234567"), "+971 50 123 4567");
+  assert.equal(prettyMobile("971501234567"), "+971 50 123 4567");
+  assert.equal(formatUaeMobile("501234567"), "+971 50 123 4567");
+  assert.equal(isValidUaeMobile("+971 50 123 4567"), true);
   assert.equal(isValidUaeMobile("043123456"), false);
 });
 

@@ -113,7 +113,8 @@
 
             <div class="field" data-field="phone">
               <label for="phone">Phone number <span class="req" aria-hidden="true">*</span></label>
-              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050 123 4567" required>
+              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="+971 5X XXX XXXX" aria-describedby="phone-hint" required>
+              <p class="hint" id="phone-hint">+971 is added automatically, then 5X XXX XXXX.</p>
               <p class="error" hidden></p>
             </div>
 

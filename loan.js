@@ -53,28 +53,34 @@ function isValidEmiratesId(value) {
   return /^784\d{12}$/.test(String(value).replace(/\D/g, ""));
 }
 
+function mobileDigits(value) {
+  let digits = String(value ?? "").replace(/\D/g, "");
+  if (digits.startsWith("00971")) digits = digits.slice(5);
+  else if (digits.startsWith("971")) digits = digits.slice(3);
+  else if ("00971".startsWith(digits) || "971".startsWith(digits)) return "";
+  if (digits.startsWith("0")) digits = digits.slice(1);
+  return digits.slice(0, 9);
+}
+
 function normalizeMobile(value) {
-  let digits = String(value).replace(/\D/g, "");
-  if (digits.startsWith("00")) digits = digits.slice(2);
-  if (digits.startsWith("971")) digits = `0${digits.slice(3)}`;
-  else if (digits.startsWith("5")) digits = `0${digits}`;
-  return digits.slice(0, 10);
+  return mobileDigits(value);
 }
 
 function isValidUaeMobile(value) {
-  return /^05\d{8}$/.test(normalizeMobile(value));
+  return /^5\d{8}$/.test(mobileDigits(value));
 }
 
-function groupMobile(digits) {
-  const d = String(digits).replace(/\D/g, "").slice(0, 10);
-  if (d.length <= 3) return d;
-  if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
-  return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
+function formatUaeMobile(value) {
+  const digits = mobileDigits(value);
+  if (!digits) return "+971 ";
+  let formatted = `+971 ${digits.slice(0, 2)}`;
+  if (digits.length > 2) formatted += ` ${digits.slice(2, 5)}`;
+  if (digits.length > 5) formatted += ` ${digits.slice(5, 9)}`;
+  return formatted;
 }
 
 function prettyMobile(value) {
-  if (!isValidUaeMobile(value)) return String(value ?? "").trim();
-  return groupMobile(normalizeMobile(value));
+  return formatUaeMobile(value);
 }
 
 function validFullName(value) {
@@ -99,7 +105,7 @@ function validateApplication(data) {
     errors.emiratesId = "Enter a 15-digit Emirates ID in the format 784-XXXX-XXXXXXX-X.";
   }
   if (!isValidUaeMobile(data.phone)) {
-    errors.phone = "Enter a UAE mobile number, such as 050 123 4567.";
+    errors.phone = "Enter a UAE mobile number, such as +971 50 123 4567.";
   }
   if (!validEmail(data.email)) errors.email = "Enter a valid email address.";
 
@@ -137,7 +143,7 @@ globalThis.LoanForm = {
   isValidEmiratesId,
   normalizeMobile,
   isValidUaeMobile,
-  groupMobile,
+  formatUaeMobile,
   prettyMobile,
   validateApplication,
 };
