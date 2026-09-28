@@ -1,9 +1,10 @@
 const {
   LOAN_CATEGORIES,
+  emiratesIdBody,
   formatEmiratesId,
   formatMoney,
-  formatUaeMobile,
   groupThousands,
+  mobileBody,
   isBlank,
   prettyMobile,
   validateApplication,
@@ -41,6 +42,8 @@ function readData() {
   const data = {};
   for (const [key, value] of new FormData(form).entries()) data[key] = String(value);
   if (!data.mashreqCustomer) data.mashreqCustomer = "";
+  data.emiratesId = formatEmiratesId(data.emiratesId ?? "");
+  data.phone = prettyMobile(data.phone ?? "");
   return data;
 }
 
@@ -128,70 +131,11 @@ function formatKeepingCaret(input, formatter) {
 }
 
 function formatEmiratesIdField(input) {
-  const start = input.selectionStart ?? input.value.length;
-  const digitsBefore = input.value.slice(0, start).replace(/\D/g, "");
-  const bodyBefore = digitsBefore.startsWith("784")
-    ? Math.max(0, digitsBefore.length - 3)
-    : "784".startsWith(digitsBefore)
-      ? 0
-      : digitsBefore.length;
-  const formatted = formatEmiratesId(input.value);
-  input.value = formatted;
-  if (document.activeElement !== input) return;
-  let caret = 4;
-  if (bodyBefore > 0) {
-    let countryDigits = 0;
-    let seen = 0;
-    for (let i = 0; i < formatted.length; i += 1) {
-      if (!/\d/.test(formatted[i])) continue;
-      countryDigits += 1;
-      if (countryDigits <= 3) continue;
-      seen += 1;
-      if (seen === bodyBefore) {
-        caret = i + 1;
-        break;
-      }
-    }
-  }
-  try {
-    input.setSelectionRange(caret, caret);
-  } catch {
-    // The caret cannot move while the field is not focused.
-  }
+  formatKeepingCaret(input, emiratesIdBody);
 }
 
 function formatPhoneField(input) {
-  const start = input.selectionStart ?? input.value.length;
-  const digitsBefore = normalizeSubscriberCount(input.value.slice(0, start));
-  const formatted = formatUaeMobile(input.value);
-  input.value = formatted;
-  if (document.activeElement !== input) return;
-  let caret = formatted.length;
-  if (digitsBefore === 0) {
-    caret = formatted.startsWith("+971 ") ? 5 : formatted.length;
-  } else {
-    let countryDigits = 0;
-    let subscriberSeen = 0;
-    for (let i = 0; i < formatted.length; i += 1) {
-      if (!/\d/.test(formatted[i])) continue;
-      countryDigits += 1;
-      if (countryDigits <= 3) continue;
-      subscriberSeen += 1;
-      if (subscriberSeen === digitsBefore) {
-        caret = i + 1;
-        break;
-      }
-    }
-  }
-  try {
-    input.setSelectionRange(caret, caret);
-  } catch {
-    // The caret cannot move while the field is not focused.
-  }
-}
-
-function normalizeSubscriberCount(value) {
-  return formatUaeMobile(value).replace("+971", "").replace(/\D/g, "").length;
+  formatKeepingCaret(input, mobileBody);
 }
 
 function formatMoneyField(input) {
@@ -216,8 +160,8 @@ function restore() {
   try {
     const data = JSON.parse(raw);
     if (!data || typeof data !== "object") return;
-    data.emiratesId = formatEmiratesId(data.emiratesId ?? "");
-    data.phone = prettyMobile(data.phone ?? "");
+    data.emiratesId = emiratesIdBody(data.emiratesId ?? "");
+    data.phone = mobileBody(data.phone ?? "");
     if (data.monthlyIncome) data.monthlyIncome = groupThousands(data.monthlyIncome);
     if (data.loanAmount) data.loanAmount = groupThousands(data.loanAmount);
     for (const [key, value] of Object.entries(data)) writeField(key, value);
@@ -410,10 +354,6 @@ function setupChrome() {
 function bindForm() {
   const emiratesId = document.getElementById("emiratesId");
   const formatId = () => formatEmiratesIdField(emiratesId);
-  emiratesId.addEventListener("focus", () => {
-    if (isBlank(emiratesId.value)) emiratesId.value = "784-";
-    formatId();
-  });
   emiratesId.addEventListener("input", formatId);
   emiratesId.addEventListener("keyup", formatId);
   emiratesId.addEventListener("paste", () => window.setTimeout(formatId, 0));
@@ -421,10 +361,6 @@ function bindForm() {
 
   const phone = document.getElementById("phone");
   const formatPhone = () => formatPhoneField(phone);
-  phone.addEventListener("focus", () => {
-    if (isBlank(phone.value)) phone.value = "+971 ";
-    formatPhone();
-  });
   phone.addEventListener("input", formatPhone);
   phone.addEventListener("keyup", formatPhone);
   phone.addEventListener("paste", () => window.setTimeout(formatPhone, 0));
@@ -460,7 +396,8 @@ function bindForm() {
   form.addEventListener("focusout", (event) => {
     const target = event.target;
     if (target instanceof HTMLInputElement && target.dataset.money != null) onMoneyBlur(target);
-    if (target instanceof HTMLInputElement && target.name === "phone") target.value = prettyMobile(target.value);
+    if (target instanceof HTMLInputElement && target.name === "phone") target.value = mobileBody(target.value);
+    if (target instanceof HTMLInputElement && target.name === "emiratesId") target.value = emiratesIdBody(target.value);
   });
 
   form.addEventListener("submit", (event) => {

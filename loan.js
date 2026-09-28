@@ -58,6 +58,11 @@ function formatEmiratesId(value) {
   return parts.length ? `784-${parts.join("-")}` : "784-";
 }
 
+function emiratesIdBody(value) {
+  const full = formatEmiratesId(value);
+  return full.startsWith("784-") ? full.slice(4) : "";
+}
+
 function isValidEmiratesId(value) {
   return /^784\d{12}$/.test(String(value).replace(/\D/g, ""));
 }
@@ -83,6 +88,15 @@ function formatUaeMobile(value) {
   const digits = mobileDigits(value);
   if (!digits) return "+971 ";
   let formatted = `+971 ${digits.slice(0, 2)}`;
+  if (digits.length > 2) formatted += ` ${digits.slice(2, 5)}`;
+  if (digits.length > 5) formatted += ` ${digits.slice(5, 9)}`;
+  return formatted;
+}
+
+function mobileBody(value) {
+  const digits = mobileDigits(value);
+  if (!digits) return "";
+  let formatted = digits.slice(0, 2);
   if (digits.length > 2) formatted += ` ${digits.slice(2, 5)}`;
   if (digits.length > 5) formatted += ` ${digits.slice(5, 9)}`;
   return formatted;
@@ -150,10 +164,12 @@ globalThis.LoanForm = {
   formatMoney,
   wholeDirhams,
   formatEmiratesId,
+  emiratesIdBody,
   isValidEmiratesId,
   normalizeMobile,
   isValidUaeMobile,
   formatUaeMobile,
+  mobileBody,
   prettyMobile,
   validateApplication,
 };
