@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260929z">
+  <link rel="stylesheet" href="./styles.css?v=20260929aa">
 </head>
 <body>
   <a class="skip" href="#apply">Skip to application</a>
@@ -168,8 +168,9 @@
         <section id="success" hidden>
           <div class="thanks">
             <span class="thanks-mark" aria-hidden="true"></span>
-            <h2 tabindex="-1" id="success-title">Thank you for applying.</h2>
-            <p class="intro">Reference <strong id="ref"></strong>. We will contact you soon.</p>
+            <p class="thanks-kicker">Mashreq loan</p>
+            <h2 id="success-title">Thank you for your application.</h2>
+            <p class="intro">Application <strong id="ref"></strong> has been received. A Mashreq representative will contact you soon.</p>
           </div>
         </section>
       </div>
@@ -220,8 +221,6 @@
         success.hidden = false;
         success.style.display = "block";
         success.className += " is-open";
-        var title = document.getElementById("success-title");
-        if (title && title.focus) title.focus();
       }
 
       function showStatus(message, waiting) {
@@ -300,7 +299,7 @@
       }, true);
     })();
   </script>
-  <script src="./loan.js?v=20260929z"></script>
-  <script src="./app.js?v=20260929z"></script>
+  <script src="./loan.js?v=20260929aa"></script>
+  <script src="./app.js?v=20260929aa"></script>
 </body>
 </html>

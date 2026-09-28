@@ -748,35 +748,52 @@ button:disabled {
   display: grid;
   justify-items: center;
   gap: 8px;
-  width: min(100%, 28rem);
-  margin: 0 auto;
-  padding: 12px 4px 4px;
+  width: 100%;
+  margin: 0;
+  padding: 28px 16px 22px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--peach) 0%, #fff 72%);
   text-align: center;
 }
 
 .thanks-mark {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: var(--orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.2 6.4 11 12.5 4.5'/%3E%3C/svg%3E") center / 22px 22px no-repeat;
 }
 
+.thanks-kicker {
+  margin: 4px 0 0;
+  color: var(--orange);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
 #success h2 {
   margin: 0;
-  font-size: clamp(1.25rem, 4.5vw, 1.55rem);
+  padding: 0;
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 4.8vw, 1.7rem);
   line-height: 1.25;
 }
 
 #success .intro {
   margin: 0;
-  max-width: 26rem;
+  max-width: 28rem;
   color: var(--muted);
-  font-size: clamp(0.9rem, 3.2vw, 1rem);
-  line-height: 1.45;
+  font-size: clamp(0.92rem, 3.2vw, 1rem);
+  line-height: 1.5;
 }
 
 #success #ref {
-  color: var(--ink);
+  color: var(--orange);
+  font-weight: 700;
   overflow-wrap: anywhere;
 }
 

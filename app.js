@@ -334,7 +334,6 @@ function restoreSent() {
   success.hidden = false;
   success.style.display = "block";
   success.classList.add("is-open");
-  document.querySelector("#success-title").focus();
   return true;
 }
 
@@ -346,7 +345,6 @@ function showReceived(data, reference) {
   success.classList.add("is-open");
   document.querySelector("#ref").textContent = reference;
   sessionStorage.removeItem(DRAFT_KEY);
-  document.querySelector("#success-title").focus();
   success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
