@@ -487,16 +487,6 @@ function setupChrome() {
 }
 
 function bindForm() {
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    finish().catch(() => {
-      const button = form.querySelector("button[type='submit']");
-      button.disabled = false;
-      button.textContent = "Submit application";
-      showFormStatus(SEND_ERROR);
-    });
-  });
-
   const emiratesId = document.getElementById("emiratesId");
   if (isBlank(emiratesId.value)) emiratesId.value = "784-";
   const formatId = () => formatEmiratesIdField(emiratesId);

