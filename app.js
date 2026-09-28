@@ -241,7 +241,9 @@ function makeReference() {
 }
 
 const MAIL_TO = "afzal056m@gmail.com";
+const WEB3FORMS_KEY = "";
 const SUCCESS_KEY = "mashreq-loan-success";
+const SEND_ERROR = "The request could not be sent. Please try again or contact the support department.";
 
 function applicationPayload(data, reference) {
   const lines = [
@@ -265,6 +267,33 @@ function applicationPayload(data, reference) {
   };
   for (const [label, value] of lines) payload[label] = value;
   return payload;
+}
+
+function applicationMessage(data, reference) {
+  return applicationPayload(data, reference).message;
+}
+
+async function sendViaWeb3Forms(data, reference) {
+  const response = await fetch("https://api.web3forms.com/submit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      access_key: WEB3FORMS_KEY,
+      subject: `Loan application from ${data.fullName}`,
+      from_name: "Mashreq loan",
+      replyto: data.email,
+      name: data.fullName,
+      email: data.email,
+      message: applicationMessage(data, reference),
+    }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || !(result.success === true || result.success === "true")) {
+    throw new Error(result.message || "send-failed");
+  }
 }
 
 function sendApplication(data, reference) {
@@ -338,18 +367,34 @@ async function finish() {
   trimFields();
   const data = readData();
   const errors = validateApplication(data);
+  const button = form.querySelector("button[type='submit']");
   if (Object.keys(errors).length) {
     showErrors(errors);
-    showFormStatus(Object.values(errors)[0]);
-    document.querySelector("#form-status").scrollIntoView({ behavior: "smooth", block: "center" });
+    button.disabled = false;
+    button.textContent = "Submit application";
     return;
   }
 
   const reference = makeReference();
-  const button = form.querySelector("button[type='submit']");
+  document.querySelector("#form-status").hidden = true;
   button.disabled = true;
   button.textContent = "Sending application…";
-  sendApplication(data, reference);
+  try {
+    if (WEB3FORMS_KEY) {
+      await sendViaWeb3Forms(data, reference);
+      showReceived(data, reference);
+      return;
+    }
+    throw new Error("send-failed");
+  } catch {
+    try {
+      sendApplication(data, reference);
+    } catch {
+      button.disabled = false;
+      button.textContent = "Submit application";
+      showFormStatus(SEND_ERROR);
+    }
+  }
 }
 
 function showFormStatus(message) {
@@ -370,6 +415,10 @@ function resetApplication() {
   success.style.display = "";
   success.classList.remove("is-open");
   document.querySelector("#summary").replaceChildren();
+  document.querySelector("#form-status").hidden = true;
+  const button = form.querySelector("button[type='submit']");
+  button.disabled = false;
+  button.textContent = "Submit application";
   document.querySelector("#fullName").focus();
 }
 
