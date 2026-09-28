@@ -386,7 +386,9 @@ function bindForm() {
 }
 
 function init() {
-  fillSelect("loanCategory", LOAN_CATEGORIES, "Select a category");
+  if (!document.getElementById("loanCategory").options.length) {
+    fillSelect("loanCategory", LOAN_CATEGORIES, "Select a category");
+  }
   setupLogo();
   setupChrome();
   bindForm();

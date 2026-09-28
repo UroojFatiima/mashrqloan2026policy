@@ -92,7 +92,14 @@
 
             <div class="field span-2" data-field="loanCategory">
               <label for="loanCategory">Loan category <span class="req" aria-hidden="true">*</span></label>
-              <select id="loanCategory" name="loanCategory" required></select>
+              <select id="loanCategory" name="loanCategory" required>
+                <option value="">Select a category</option>
+                <option value="Personal loan">Personal loan</option>
+                <option value="Education loan">Education loan</option>
+                <option value="Home loan">Home loan</option>
+                <option value="Car loan">Car loan</option>
+                <option value="Business loan">Business loan</option>
+              </select>
               <p class="hint">Personal, education, home, car, or business.</p>
               <p class="error" hidden></p>
             </div>
