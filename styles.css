@@ -592,6 +592,7 @@ input::placeholder {
 
 .error {
   color: var(--danger);
+  font-weight: 700;
 }
 
 .choices {

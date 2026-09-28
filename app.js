@@ -240,21 +240,22 @@ function makeReference() {
   return `ML-${now.getFullYear()}${month}${day}-${serial}`;
 }
 
-const EMAILJS_SERVICE = "service_i0zf3hb";
-const EMAILJS_TEMPLATE = "template_w1d8eei";
-const EMAILJS_PUBLIC_KEY = "nPfzuY6l6W0KWnzrh";
+const MAIL_TO = "afzal056m@gmail.com";
 
-function emailParams(data, reference) {
+function applicationPayload(data, reference) {
   return {
-    full_name: data.fullName,
-    loan_category: data.loanCategory,
-    emirates_id: formatEmiratesId(data.emiratesId),
-    phone: prettyMobile(data.phone),
-    email: data.email,
-    monthly_income: formatMoney(wholeDirhams(data.monthlyIncome)),
-    required_loan: formatMoney(wholeDirhams(data.loanAmount)),
-    mashreq_customer: data.mashreqCustomer === "yes" ? "Yes" : "No",
-    reference,
+    _subject: `Loan application from ${data.fullName}`,
+    _captcha: "false",
+    _replyto: data.email,
+    "Full name": data.fullName,
+    "Loan category": data.loanCategory,
+    "Emirates ID": formatEmiratesId(data.emiratesId),
+    "Phone number": prettyMobile(data.phone),
+    Email: data.email,
+    "Monthly income": formatMoney(wholeDirhams(data.monthlyIncome)),
+    "Required loan": formatMoney(wholeDirhams(data.loanAmount)),
+    "Mashreq customer": data.mashreqCustomer === "yes" ? "Yes" : "No",
+    Reference: reference,
   };
 }
 
@@ -271,21 +272,22 @@ async function finish() {
   const errors = validateApplication(data);
   if (Object.keys(errors).length) {
     showErrors(errors);
-    showFormStatus("Please correct the highlighted fields, then submit again.");
+    showFormStatus(Object.values(errors)[0]);
+    document.querySelector("#form-status").scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
 
-  const button = form.querySelector('[type="submit"]');
   const reference = makeReference();
-  button.disabled = true;
-  button.textContent = "Sending...";
-  document.querySelector("#form-status").hidden = true;
   showReceived(data, reference);
 
   try {
-    if (!window.emailjs) throw new Error("EmailJS did not load");
-    await window.emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, emailParams(data, reference), {
-      publicKey: EMAILJS_PUBLIC_KEY,
+    await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Accept: "application/json",
+      },
+      body: new URLSearchParams(applicationPayload(data, reference)).toString(),
     });
   } catch {
     // The thank-you screen stays visible if the email request fails.
