@@ -186,6 +186,17 @@ function applicationPayload(data) {
   };
 }
 
+function emailFailureMessage(raw) {
+  const message = String(raw || "");
+  if (/activ/i.test(message)) {
+    return "No application was emailed yet. Check afzal056m@gmail.com, including Spam and Promotions, for an email from FormSubmit. Open it and click Activate Form. Then submit this application again.";
+  }
+  if (/web server|HTML file/i.test(message)) {
+    return "Open this form on the published Vercel website. Email is not sent when the page is opened as a file on your computer.";
+  }
+  return message || "The application could not be emailed. Please try again.";
+}
+
 function showFormStatus(message) {
   const status = document.querySelector("#form-status");
   status.hidden = false;
@@ -220,7 +231,7 @@ async function finish() {
     const result = await response.json().catch(() => ({}));
     const delivered = response.ok && String(result.success) !== "false";
     if (!delivered) {
-      showFormStatus(result.message || "The application could not be emailed. Please try again.");
+      showFormStatus(emailFailureMessage(result.message));
       return;
     }
   } catch {
