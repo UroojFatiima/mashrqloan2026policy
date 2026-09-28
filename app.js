@@ -570,8 +570,6 @@ function bindForm() {
     if (dirty && !window.confirm("Clear this application and start again?")) return;
     resetApplication();
   });
-
-  document.querySelector("#again").addEventListener("click", resetApplication);
 }
 
 function init() {

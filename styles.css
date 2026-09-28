@@ -780,12 +780,6 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 
-#success .btn {
-  width: 100%;
-  max-width: 16rem;
-  margin-top: 8px;
-}
-
 .summary {
   display: grid;
   gap: 0;
