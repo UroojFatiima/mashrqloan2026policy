@@ -51,6 +51,7 @@ function wholeDirhams(value) {
 
 function formatEmiratesId(value) {
   let digits = String(value ?? "").replace(/\D/g, "");
+  if (digits.startsWith("784784") && digits.length > 15) digits = digits.slice(3);
   if (digits.startsWith("784")) digits = digits.slice(3);
   else if ("784".startsWith(digits)) digits = "";
   digits = digits.slice(0, 12);

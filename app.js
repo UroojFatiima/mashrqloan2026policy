@@ -295,10 +295,10 @@ async function finish() {
     const response = await fetch(`https://formsubmit.co/ajax/${MAIL_TO}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
       },
-      body: JSON.stringify(applicationPayload(data)),
+      body: new URLSearchParams(applicationPayload(data)).toString(),
     });
     const result = await response.json().catch(() => ({}));
     const delivered = response.ok && String(result.success) !== "false";
