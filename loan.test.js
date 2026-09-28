@@ -34,11 +34,12 @@ function validApplication(overrides = {}) {
   };
 }
 
-test("formats a 15-digit Emirates ID as XXX-XXXX-XXXXXXX-X", () => {
+test("formats a 15-digit Emirates ID as 784-XXXX-XXXXXXX-X", () => {
   assert.equal(formatEmiratesId("784199212345671"), "784-1992-1234567-1");
-  assert.equal(formatEmiratesId("786756464545454"), "786-7564-6454545-4");
-  assert.equal(formatEmiratesId("78675646454545499"), "786-7564-6454545-4");
-  assert.equal(formatEmiratesId(""), "");
+  assert.equal(formatEmiratesId("78453535333333333"), "784-5353-5333333-3");
+  assert.equal(formatEmiratesId(""), "784-");
+  assert.equal(formatEmiratesId("784").replace(/\D/g, "").length <= 15, true);
+  assert.equal(formatEmiratesId("78453535333333333").replace(/\D/g, "").length, 15);
   assert.equal(isValidEmiratesId("784-1992-1234567-1"), true);
   assert.equal(isValidEmiratesId("123-1992-1234567-1"), false);
   assert.equal(isValidEmiratesId("784-1992-123456-1"), false);

@@ -50,9 +50,12 @@ function wholeDirhams(value) {
 }
 
 function formatEmiratesId(value) {
-  const digits = String(value ?? "").replace(/\D/g, "").slice(0, 15);
-  const parts = [digits.slice(0, 3), digits.slice(3, 7), digits.slice(7, 14), digits.slice(14, 15)].filter(Boolean);
-  return parts.join("-");
+  let digits = String(value ?? "").replace(/\D/g, "");
+  if (digits.startsWith("784")) digits = digits.slice(3);
+  else if ("784".startsWith(digits)) digits = "";
+  digits = digits.slice(0, 12);
+  const parts = [digits.slice(0, 4), digits.slice(4, 11), digits.slice(11, 12)].filter(Boolean);
+  return parts.length ? `784-${parts.join("-")}` : "784-";
 }
 
 function isValidEmiratesId(value) {

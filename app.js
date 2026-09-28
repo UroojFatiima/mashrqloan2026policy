@@ -130,7 +130,38 @@ function formatKeepingCaret(input, formatter) {
 }
 
 function formatEmiratesIdField(input) {
-  formatKeepingCaret(input, formatEmiratesId);
+  const start = input.selectionStart ?? input.value.length;
+  const digitsBefore = input.value.slice(0, start).replace(/\D/g, "");
+  const bodyBefore = digitsBefore.startsWith("784")
+    ? Math.max(0, digitsBefore.length - 3)
+    : "784".startsWith(digitsBefore)
+      ? 0
+      : digitsBefore.length;
+  input.value = formatEmiratesId(input.value);
+  if (document.activeElement !== input) return;
+  const formatted = input.value;
+  let caret = 4;
+  if (bodyBefore > 0) {
+    let countryDigits = 0;
+    let seen = 0;
+    caret = formatted.length;
+    for (let i = 0; i < formatted.length; i += 1) {
+      if (!/\d/.test(formatted[i])) continue;
+      countryDigits += 1;
+      if (countryDigits <= 3) continue;
+      seen += 1;
+      if (seen === bodyBefore) {
+        caret = i + 1;
+        break;
+      }
+    }
+  }
+  caret = Math.max(4, caret);
+  try {
+    input.setSelectionRange(caret, caret);
+  } catch {
+    // The caret cannot move while the field is not focused.
+  }
 }
 
 function formatPhoneField(input) {
@@ -352,11 +383,34 @@ function setupChrome() {
 
 function bindForm() {
   const emiratesId = document.getElementById("emiratesId");
+  if (isBlank(emiratesId.value)) emiratesId.value = "784-";
   const formatId = () => formatEmiratesIdField(emiratesId);
-  emiratesId.addEventListener("input", formatId);
+  emiratesId.addEventListener("keydown", (event) => {
+    const digits = emiratesId.value.replace(/\D/g, "");
+    const start = emiratesId.selectionStart ?? 0;
+    const end = emiratesId.selectionEnd ?? start;
+    if ((event.key === "Backspace" || event.key === "Delete") && end <= 4) {
+      event.preventDefault();
+      try {
+        emiratesId.setSelectionRange(4, 4);
+      } catch {
+        // The caret cannot move while the field is not focused.
+      }
+      return;
+    }
+    if (/^\d$/.test(event.key) && digits.length >= 15 && start === end) event.preventDefault();
+  });
+  emiratesId.addEventListener("input", () => {
+    formatId();
+    window.setTimeout(formatId, 0);
+  });
   emiratesId.addEventListener("keyup", formatId);
   emiratesId.addEventListener("paste", () => window.setTimeout(formatId, 0));
   emiratesId.addEventListener("blur", formatId);
+  emiratesId.addEventListener("focus", () => {
+    if (isBlank(emiratesId.value)) emiratesId.value = "784-";
+    formatId();
+  });
 
   const phone = document.getElementById("phone");
   const formatPhone = () => formatPhoneField(phone);
