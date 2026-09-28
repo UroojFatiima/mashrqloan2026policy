@@ -105,22 +105,29 @@ function formatKeepingCaret(input, formatter) {
   const digitsBefore = input.value.slice(0, start).replace(/\D/g, "").length;
   input.value = formatted;
   if (document.activeElement !== input) return;
-  if (digitsBefore === 0) {
-    input.setSelectionRange(0, 0);
-    return;
-  }
-  let seen = 0;
   let caret = formatted.length;
-  for (let i = 0; i < formatted.length; i += 1) {
-    if (/\d/.test(formatted[i])) {
-      seen += 1;
-      if (seen === digitsBefore) {
-        caret = i + 1;
-        break;
+  if (digitsBefore === 0) caret = 0;
+  else {
+    let seen = 0;
+    for (let i = 0; i < formatted.length; i += 1) {
+      if (/\d/.test(formatted[i])) {
+        seen += 1;
+        if (seen === digitsBefore) {
+          caret = i + 1;
+          break;
+        }
       }
     }
   }
-  input.setSelectionRange(caret, caret);
+  try {
+    input.setSelectionRange(caret, caret);
+  } catch {
+    // The caret cannot move while the field is not focused.
+  }
+}
+
+function formatEmiratesIdField(input) {
+  formatKeepingCaret(input, formatEmiratesId);
 }
 
 function onMoneyBlur(input) {
@@ -332,10 +339,17 @@ function setupChrome() {
 }
 
 function bindForm() {
+  const emiratesId = document.getElementById("emiratesId");
+  const formatId = () => formatEmiratesIdField(emiratesId);
+  emiratesId.addEventListener("input", formatId);
+  emiratesId.addEventListener("keyup", formatId);
+  emiratesId.addEventListener("paste", () => window.setTimeout(formatId, 0));
+  emiratesId.addEventListener("blur", formatId);
+
   form.addEventListener("input", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement) || !("name" in target)) return;
-    if (target.name === "emiratesId") formatKeepingCaret(target, formatEmiratesId);
+    if (target.name === "emiratesId") formatEmiratesIdField(target);
     if (target.name === "phone") {
       const digits = target.value.replace(/\D/g, "");
       if (digits.startsWith("0")) {
