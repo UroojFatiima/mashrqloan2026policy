@@ -241,6 +241,7 @@ function makeReference() {
 }
 
 const MAIL_TO = "afzal056m@gmail.com";
+const SUCCESS_KEY = "mashreq-loan-success";
 
 function applicationPayload(data, reference) {
   const lines = [
@@ -259,25 +260,55 @@ function applicationPayload(data, reference) {
     _captcha: "false",
     _replyto: data.email,
     _template: "box",
+    _next: `${window.location.origin}${window.location.pathname}?sent=1`,
     message: lines.map(([label, value]) => `${label}: ${value}`).join("\n"),
   };
   for (const [label, value] of lines) payload[label] = value;
   return payload;
 }
 
-async function sendApplication(data, reference) {
-  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json",
-    },
-    body: new URLSearchParams(applicationPayload(data, reference)).toString(),
-  });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok || String(result.success) === "false") {
-    throw new Error(result.message || "The application could not be emailed.");
+function sendApplication(data, reference) {
+  sessionStorage.setItem(SUCCESS_KEY, JSON.stringify({ data, reference }));
+  const sender = document.createElement("form");
+  sender.method = "POST";
+  sender.action = `https://formsubmit.co/${MAIL_TO}`;
+  sender.acceptCharset = "UTF-8";
+  for (const [name, value] of Object.entries(applicationPayload(data, reference))) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = String(value ?? "");
+    sender.append(input);
   }
+  document.body.append(sender);
+  sender.submit();
+}
+
+function restoreSent() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("sent") !== "1") return false;
+  let saved = {};
+  try {
+    saved = JSON.parse(sessionStorage.getItem(SUCCESS_KEY) || "{}");
+  } catch {
+    saved = {};
+  }
+  sessionStorage.removeItem(SUCCESS_KEY);
+  sessionStorage.removeItem(DRAFT_KEY);
+  const url = new URL(window.location.href);
+  url.searchParams.delete("sent");
+  window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  if (saved.data && saved.reference) {
+    showReceived(saved.data, saved.reference);
+    return true;
+  }
+  form.hidden = true;
+  form.style.display = "none";
+  success.hidden = false;
+  success.style.display = "block";
+  success.classList.add("is-open");
+  document.querySelector("#success-title").focus();
+  return true;
 }
 
 function showReceived(data, reference) {
@@ -315,12 +346,10 @@ async function finish() {
   }
 
   const reference = makeReference();
-  showReceived(data, reference);
-  try {
-    await sendApplication(data, reference);
-  } catch {
-    // The thank-you screen stays on this page even if the mailbox is slow.
-  }
+  const button = form.querySelector("button[type='submit']");
+  button.disabled = true;
+  button.textContent = "Sending application…";
+  sendApplication(data, reference);
 }
 
 function showFormStatus(message) {
@@ -512,6 +541,7 @@ function bindForm() {
 function init() {
   bindForm();
   try {
+    if (restoreSent()) return;
     if (!document.getElementById("loanCategory").options.length) {
       fillSelect("loanCategory", LOAN_CATEGORIES, "Select a category");
     }
