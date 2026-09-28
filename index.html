@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css?v=20260929">
 </head>
 <body>
   <a class="skip" href="#apply">Skip to application</a>
@@ -106,14 +106,14 @@
 
             <div class="field span-2" data-field="emiratesId">
               <label for="emiratesId">Emirates ID <span class="req" aria-hidden="true">*</span></label>
-              <input id="emiratesId" name="emiratesId" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="18" placeholder="784-XXXX-XXXXXXX-X" aria-describedby="emiratesId-hint" required>
+              <input id="emiratesId" name="emiratesId" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="18" placeholder="784-XXXX-XXXXXXX-X" value="784-" aria-describedby="emiratesId-hint" required>
               <p class="hint" id="emiratesId-hint">Type the 15 digits. Hyphens are added automatically: 784-XXXX-XXXXXXX-X.</p>
               <p class="error" hidden></p>
             </div>
 
             <div class="field" data-field="phone">
               <label for="phone">Phone number <span class="req" aria-hidden="true">*</span></label>
-              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="+971 5X XXX XXXX" aria-describedby="phone-hint" required>
+              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="+971 5X XXX XXXX" value="+971 " aria-describedby="phone-hint" required>
               <p class="hint" id="phone-hint">+971 is added automatically, then 5X XXX XXXX.</p>
               <p class="error" hidden></p>
             </div>
@@ -178,7 +178,7 @@
   </main>
 
   <noscript>This form needs JavaScript to check the Emirates ID, phone number, and income.</noscript>
-  <script src="./loan.js"></script>
-  <script src="./app.js"></script>
+  <script src="./loan.js?v=20260929"></script>
+  <script src="./app.js?v=20260929"></script>
 </body>
 </html>

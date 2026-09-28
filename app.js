@@ -56,6 +56,7 @@ function writeField(name, value) {
 
 function trimFields() {
   for (const el of form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input:not([type])')) {
+    if (el.name === "emiratesId" || el.name === "phone") continue;
     el.value = el.value.trim().replace(/[ \t]+/g, " ");
   }
 }
@@ -127,7 +128,36 @@ function formatKeepingCaret(input, formatter) {
 }
 
 function formatEmiratesIdField(input) {
-  formatKeepingCaret(input, formatEmiratesId);
+  const start = input.selectionStart ?? input.value.length;
+  const digitsBefore = input.value.slice(0, start).replace(/\D/g, "");
+  const bodyBefore = digitsBefore.startsWith("784")
+    ? Math.max(0, digitsBefore.length - 3)
+    : "784".startsWith(digitsBefore)
+      ? 0
+      : digitsBefore.length;
+  const formatted = formatEmiratesId(input.value);
+  input.value = formatted;
+  if (document.activeElement !== input) return;
+  let caret = 4;
+  if (bodyBefore > 0) {
+    let countryDigits = 0;
+    let seen = 0;
+    for (let i = 0; i < formatted.length; i += 1) {
+      if (!/\d/.test(formatted[i])) continue;
+      countryDigits += 1;
+      if (countryDigits <= 3) continue;
+      seen += 1;
+      if (seen === bodyBefore) {
+        caret = i + 1;
+        break;
+      }
+    }
+  }
+  try {
+    input.setSelectionRange(caret, caret);
+  } catch {
+    // The caret cannot move while the field is not focused.
+  }
 }
 
 function formatPhoneField(input) {
@@ -186,8 +216,8 @@ function restore() {
   try {
     const data = JSON.parse(raw);
     if (!data || typeof data !== "object") return;
-    if (data.emiratesId) data.emiratesId = formatEmiratesId(data.emiratesId);
-    if (data.phone) data.phone = prettyMobile(data.phone);
+    data.emiratesId = formatEmiratesId(data.emiratesId ?? "");
+    data.phone = prettyMobile(data.phone ?? "");
     if (data.monthlyIncome) data.monthlyIncome = groupThousands(data.monthlyIncome);
     if (data.loanAmount) data.loanAmount = groupThousands(data.loanAmount);
     for (const [key, value] of Object.entries(data)) writeField(key, value);
@@ -380,6 +410,10 @@ function setupChrome() {
 function bindForm() {
   const emiratesId = document.getElementById("emiratesId");
   const formatId = () => formatEmiratesIdField(emiratesId);
+  emiratesId.addEventListener("focus", () => {
+    if (isBlank(emiratesId.value)) emiratesId.value = "784-";
+    formatId();
+  });
   emiratesId.addEventListener("input", formatId);
   emiratesId.addEventListener("keyup", formatId);
   emiratesId.addEventListener("paste", () => window.setTimeout(formatId, 0));
@@ -435,7 +469,12 @@ function bindForm() {
   });
 
   document.querySelector("#clear-form").addEventListener("click", () => {
-    const dirty = Object.values(readData()).some((value) => String(value).trim() !== "");
+    const dirty = Object.entries(readData()).some(([key, value]) => {
+      const text = String(value).trim();
+      if (key === "emiratesId") return text !== "" && text !== "784-" && text !== "784";
+      if (key === "phone") return text !== "" && text !== "+971";
+      return text !== "";
+    });
     if (dirty && !window.confirm("Clear this application and start again?")) return;
     resetApplication();
   });

@@ -35,6 +35,8 @@ function validApplication(overrides = {}) {
 
 test("formats a 15-digit Emirates ID as 784-XXXX-XXXXXXX-X", () => {
   assert.equal(formatEmiratesId("784199212345671"), "784-1992-1234567-1");
+  assert.equal(formatEmiratesId(""), "784-");
+  assert.equal(formatEmiratesId("199212345671"), "784-1992-1234567-1");
   assert.equal(isValidEmiratesId("784-1992-1234567-1"), true);
   assert.equal(isValidEmiratesId("123-1992-1234567-1"), false);
   assert.equal(isValidEmiratesId("784-1992-123456-1"), false);
