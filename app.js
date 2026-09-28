@@ -240,22 +240,29 @@ function makeReference() {
   return `ML-${now.getFullYear()}${month}${day}-${serial}`;
 }
 
-const MAIL_TO = "afzal056m@gmail.com";
+const EMAILJS_SERVICE = "service_i0zf3hb";
+const EMAILJS_TEMPLATE = "template_w1d8eei";
+const EMAILJS_PUBLIC_KEY = "nPfzuY6l6W0KWnzrh";
 
-function applicationPayload(data) {
+function emailParams(data, reference) {
   return {
-    _subject: `Loan application from ${data.fullName}`,
-    _captcha: "false",
-    _replyto: data.email,
-    "Full name": data.fullName,
-    "Loan category": data.loanCategory,
-    "Emirates ID": formatEmiratesId(data.emiratesId),
-    "Phone number": prettyMobile(data.phone),
-    "Email": data.email,
-    "Monthly income": formatMoney(wholeDirhams(data.monthlyIncome)),
-    "Required loan": formatMoney(wholeDirhams(data.loanAmount)),
-    "Mashreq customer": data.mashreqCustomer === "yes" ? "Yes" : "No",
+    full_name: data.fullName,
+    loan_category: data.loanCategory,
+    emirates_id: formatEmiratesId(data.emiratesId),
+    phone: prettyMobile(data.phone),
+    email: data.email,
+    monthly_income: formatMoney(wholeDirhams(data.monthlyIncome)),
+    required_loan: formatMoney(wholeDirhams(data.loanAmount)),
+    mashreq_customer: data.mashreqCustomer === "yes" ? "Yes" : "No",
+    reference,
   };
+}
+
+function showFormStatus(message) {
+  const status = document.querySelector("#form-status");
+  status.hidden = false;
+  status.textContent = message;
+  live.textContent = message;
 }
 
 async function finish() {
@@ -267,20 +274,22 @@ async function finish() {
     return;
   }
 
+  const button = form.querySelector('[type="submit"]');
   const reference = makeReference();
-  showReceived(data, reference);
+  button.disabled = true;
+  button.textContent = "Sending...";
+  document.querySelector("#form-status").hidden = true;
 
   try {
-    await fetch(`https://formsubmit.co/ajax/${MAIL_TO}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-      body: new URLSearchParams(applicationPayload(data)).toString(),
+    if (!window.emailjs) throw new Error("EmailJS did not load");
+    await window.emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, emailParams(data, reference), {
+      publicKey: EMAILJS_PUBLIC_KEY,
     });
+    showReceived(data, reference);
   } catch {
-    // The thank-you screen is already visible if the network request fails.
+    showFormStatus("The application could not be emailed. Please try again.");
+    button.disabled = false;
+    button.textContent = "Submit application";
   }
 }
 
