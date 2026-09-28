@@ -170,13 +170,11 @@ function makeReference() {
 
 const MAIL_TO = "afzal056m@gmail.com";
 
-function applicationPayload(data, reference) {
+function applicationPayload(data) {
   return {
-    _subject: `Loan application ${reference} from ${data.fullName}`,
-    _template: "table",
+    _subject: `Loan application from ${data.fullName}`,
     _captcha: "false",
     _replyto: data.email,
-    "Reference": reference,
     "Full name": data.fullName,
     "Loan category": data.loanCategory,
     "Emirates ID": formatEmiratesId(data.emiratesId),
@@ -217,7 +215,7 @@ async function finish() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(applicationPayload(data, reference)),
+      body: JSON.stringify(applicationPayload(data)),
     });
     const result = await response.json().catch(() => ({}));
     const delivered = response.ok && String(result.success) !== "false";
