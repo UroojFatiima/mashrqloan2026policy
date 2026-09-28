@@ -681,6 +681,10 @@ a:focus-visible,
   font-weight: 700;
 }
 
+.form-status.is-open {
+  display: block !important;
+}
+
 button:disabled {
   opacity: 0.6;
   cursor: wait;

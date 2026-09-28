@@ -262,7 +262,6 @@ function applicationPayload(data, reference) {
     _captcha: "false",
     _replyto: data.email,
     _template: "box",
-    _next: `${window.location.origin}${window.location.pathname}?sent=1`,
     message: lines.map(([label, value]) => `${label}: ${value}`).join("\n"),
   };
   for (const [label, value] of lines) payload[label] = value;
@@ -296,21 +295,20 @@ async function sendViaWeb3Forms(data, reference) {
   }
 }
 
-function sendApplication(data, reference) {
-  sessionStorage.setItem(SUCCESS_KEY, JSON.stringify({ data, reference }));
-  const sender = document.createElement("form");
-  sender.method = "POST";
-  sender.action = `https://formsubmit.co/${MAIL_TO}`;
-  sender.acceptCharset = "UTF-8";
-  for (const [name, value] of Object.entries(applicationPayload(data, reference))) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = name;
-    input.value = String(value ?? "");
-    sender.append(input);
+async function sendApplication(data, reference) {
+  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      Accept: "application/json",
+    },
+    body: new URLSearchParams(applicationPayload(data, reference)).toString(),
+  });
+  const result = await response.json().catch(() => ({}));
+  const accepted = result.success === true || result.success === "true";
+  if (!response.ok || !accepted) {
+    throw new Error(result.message || "send-failed");
   }
-  document.body.append(sender);
-  sender.submit();
 }
 
 function restoreSent() {
@@ -372,36 +370,40 @@ async function finish() {
     showErrors(errors);
     button.disabled = false;
     button.textContent = "Submit application";
+    showFormStatus(Object.values(errors)[0]);
     return;
   }
 
   const reference = makeReference();
-  document.querySelector("#form-status").hidden = true;
+  hideFormStatus();
   button.disabled = true;
   button.textContent = "Sending application…";
   try {
-    if (WEB3FORMS_KEY) {
-      await sendViaWeb3Forms(data, reference);
-      showReceived(data, reference);
-      return;
-    }
-    throw new Error("send-failed");
-  } catch {
-    try {
-      sendApplication(data, reference);
-    } catch {
-      button.disabled = false;
-      button.textContent = "Submit application";
-      showFormStatus(SEND_ERROR);
-    }
+    if (WEB3FORMS_KEY) await sendViaWeb3Forms(data, reference);
+    else await sendApplication(data, reference);
+    showReceived(data, reference);
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = "Submit application";
+    const detail = error instanceof Error ? error.message : "";
+    showFormStatus(detail && detail !== "send-failed" ? detail : SEND_ERROR);
   }
+}
+
+function hideFormStatus() {
+  const status = document.querySelector("#form-status");
+  status.hidden = true;
+  status.classList.remove("is-open");
+  status.textContent = "";
 }
 
 function showFormStatus(message) {
   const status = document.querySelector("#form-status");
   status.hidden = false;
+  status.classList.add("is-open");
   status.textContent = message;
   live.textContent = message;
+  status.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
 function resetApplication() {
@@ -415,7 +417,7 @@ function resetApplication() {
   success.style.display = "";
   success.classList.remove("is-open");
   document.querySelector("#summary").replaceChildren();
-  document.querySelector("#form-status").hidden = true;
+  hideFormStatus();
   const button = form.querySelector("button[type='submit']");
   button.disabled = false;
   button.textContent = "Submit application";
@@ -485,6 +487,16 @@ function setupChrome() {
 }
 
 function bindForm() {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    finish().catch(() => {
+      const button = form.querySelector("button[type='submit']");
+      button.disabled = false;
+      button.textContent = "Submit application";
+      showFormStatus(SEND_ERROR);
+    });
+  });
+
   const emiratesId = document.getElementById("emiratesId");
   if (isBlank(emiratesId.value)) emiratesId.value = "784-";
   const formatId = () => formatEmiratesIdField(emiratesId);
@@ -566,11 +578,6 @@ function bindForm() {
     if (target instanceof HTMLInputElement && target.dataset.money != null) onMoneyBlur(target);
     if (target instanceof HTMLInputElement && target.name === "phone") target.value = mobileBody(target.value);
     if (target instanceof HTMLInputElement && target.name === "emiratesId") target.value = formatEmiratesId(target.value);
-  });
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    finish();
   });
 
   document.querySelector("#clear-form").addEventListener("click", () => {
