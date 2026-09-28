@@ -689,8 +689,8 @@ button:disabled {
   text-transform: uppercase;
 }
 
-#success {
-  display: block;
+#success.is-open {
+  display: block !important;
 }
 
 #success .intro {

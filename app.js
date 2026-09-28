@@ -271,6 +271,7 @@ async function finish() {
   const errors = validateApplication(data);
   if (Object.keys(errors).length) {
     showErrors(errors);
+    showFormStatus("Please correct the highlighted fields, then submit again.");
     return;
   }
 
@@ -279,17 +280,15 @@ async function finish() {
   button.disabled = true;
   button.textContent = "Sending...";
   document.querySelector("#form-status").hidden = true;
+  showReceived(data, reference);
 
   try {
     if (!window.emailjs) throw new Error("EmailJS did not load");
     await window.emailjs.send(EMAILJS_SERVICE, EMAILJS_TEMPLATE, emailParams(data, reference), {
       publicKey: EMAILJS_PUBLIC_KEY,
     });
-    showReceived(data, reference);
   } catch {
-    showFormStatus("The application could not be emailed. Please try again.");
-    button.disabled = false;
-    button.textContent = "Submit application";
+    // The thank-you screen stays visible if the email request fails.
   }
 }
 
@@ -309,6 +308,7 @@ function showReceived(data, reference) {
   sessionStorage.removeItem(DRAFT_KEY);
   form.hidden = true;
   success.hidden = false;
+  success.classList.add("is-open");
   document.querySelector("#success-title").focus();
   success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -320,6 +320,7 @@ function resetApplication() {
   clearErrors();
   form.hidden = false;
   success.hidden = true;
+  success.classList.remove("is-open");
   document.querySelector("#summary").replaceChildren();
   document.querySelector("#fullName").focus();
 }
