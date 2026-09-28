@@ -58,7 +58,8 @@ test("formats a UAE mobile number as +971 5X XXX XXXX", () => {
 
 test("groups dirham amounts with thousand separators", () => {
   assert.equal(groupThousands("3535353535"), "3,535,353,535");
-  assert.equal(groupThousands("4546"), "4,546");
+  assert.equal(groupThousands("3555555535"), "3,555,555,535");
+  assert.equal(groupThousands("tbdg455"), "455");
   assert.equal(groupThousands("3000"), "3,000");
   assert.equal(groupThousands("3,000"), "3,000");
   assert.equal(groupThousands(""), "");

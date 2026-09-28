@@ -169,7 +169,29 @@ function formatPhoneField(input) {
 }
 
 function formatMoneyField(input) {
-  formatKeepingCaret(input, groupThousands);
+  const start = input.selectionStart ?? input.value.length;
+  const digitsBefore = input.value.slice(0, start).replace(/\D/g, "").length;
+  const formatted = groupThousands(input.value);
+  if (input.value !== formatted) input.value = formatted;
+  if (document.activeElement !== input) return;
+  let caret = formatted.length;
+  if (digitsBefore === 0) caret = 0;
+  else {
+    let seen = 0;
+    for (let i = 0; i < formatted.length; i += 1) {
+      if (!/\d/.test(formatted[i])) continue;
+      seen += 1;
+      if (seen === digitsBefore) {
+        caret = i + 1;
+        break;
+      }
+    }
+  }
+  try {
+    input.setSelectionRange(caret, caret);
+  } catch {
+    // The caret cannot move while the field is not focused.
+  }
 }
 
 function onMoneyBlur(input) {
@@ -421,7 +443,19 @@ function bindForm() {
 
   for (const money of form.querySelectorAll("[data-money]")) {
     const formatAmount = () => formatMoneyField(money);
-    money.addEventListener("input", formatAmount);
+    money.addEventListener("keydown", (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "Enter"].includes(event.key)) return;
+      if (/^\d$/.test(event.key)) return;
+      event.preventDefault();
+    });
+    money.addEventListener("beforeinput", (event) => {
+      if (event.inputType === "insertText" && event.data && /\D/.test(event.data)) event.preventDefault();
+    });
+    money.addEventListener("input", () => {
+      formatAmount();
+      window.setTimeout(formatAmount, 0);
+    });
     money.addEventListener("keyup", formatAmount);
     money.addEventListener("paste", () => window.setTimeout(formatAmount, 0));
     money.addEventListener("blur", formatAmount);
