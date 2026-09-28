@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ff5e00">
+  <title>Loan application</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip" href="#apply">Skip to application</a>
+
+  <header class="site-header" id="site-header">
+    <div class="util">
+      <nav class="util-left" aria-label="Segments">
+        <a href="#apply">Business</a>
+        <a href="#apply">Corporate</a>
+        <a href="#apply">International</a>
+        <a href="#apply">Mashreq Al Islami</a>
+      </nav>
+      <div class="util-right">
+        <span class="lang">عربي</span>
+        <span>UAE</span>
+        <a class="util-extra" href="#apply">About Us</a>
+        <a class="util-extra" href="#apply">ATM &amp; Branches</a>
+        <a class="care" href="#apply">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a8 8 0 0 0-8 8c0 2.2.9 4.2 2.3 5.6V20l2.5-1.4c1 .4 2.1.6 3.2.6a8 8 0 0 0 0-16zm-1 11v-2h2v2h-2zm0-3.2V7h2v3.8h-2z"/></svg>
+          Customer Care
+        </a>
+      </div>
+    </div>
+
+    <div class="bar">
+      <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">
+        <span class="sr-only">Open menu</span>
+        <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+
+      <!-- Drop logo.png in this folder to replace the placeholder. -->
+      <a class="logo is-empty" id="logo-link" href="#apply">
+        <img id="logo" src="logo.png" alt="Mashreq" width="140" height="36">
+        <span class="logo-fallback">Logo</span>
+      </a>
+
+      <nav id="primary-nav" class="primary-nav" aria-label="Primary">
+        <a href="#apply">Accounts</a>
+        <a href="#apply">Cards</a>
+        <a href="#apply" aria-current="page">Loans</a>
+        <a href="#apply">Transfers</a>
+        <a href="#apply">Investments</a>
+        <a href="#apply">Insurance</a>
+        <a href="#apply">Rewards</a>
+        <a class="neo" href="#apply">NEO PLUS <span class="new">NEW</span></a>
+        <a class="btn btn-solid menu-only" href="#apply">Become A Customer</a>
+      </nav>
+
+      <div class="bar-actions">
+        <button type="button" class="icon-btn" id="search-toggle" aria-expanded="false" aria-controls="site-search">
+          <span class="sr-only">Search</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <a class="btn btn-solid" href="#apply">Sign In</a>
+        <a class="btn btn-solid desktop-only" href="#apply">Become A Customer</a>
+      </div>
+    </div>
+
+    <form id="site-search" class="site-search" hidden>
+      <label class="sr-only" for="q">Search</label>
+      <input id="q" type="search" placeholder="Search" enterkeyhint="search">
+    </form>
+  </header>
+
+  <div class="banner" id="banner">
+    <p>Are you ready for <strong>Mashreq's SWIFT related release</strong> coming this <strong>November 2026</strong>? <a href="#apply">Learn More</a></p>
+    <button type="button" id="dismiss-banner" aria-label="Dismiss announcement">&times;</button>
+  </div>
+
+  <main id="apply">
+    <div class="wrap">
+      <h1>Loan application</h1>
+      <p class="intro">Choose a category and tell us how to reach you. Fields marked * are required.</p>
+
+      <div class="card">
+        <form id="loan-form" novalidate autocomplete="on">
+          <p class="sr-only" aria-live="polite" id="live"></p>
+          <div class="grid">
+            <div class="field span-2" data-field="fullName">
+              <label for="fullName">Full name <span class="req" aria-hidden="true">*</span></label>
+              <input id="fullName" name="fullName" autocomplete="name" required>
+              <p class="error" hidden></p>
+            </div>
+
+            <div class="field span-2" data-field="loanCategory">
+              <label for="loanCategory">Loan category <span class="req" aria-hidden="true">*</span></label>
+              <select id="loanCategory" name="loanCategory" required></select>
+              <p class="hint">Personal, education, home, car, or business.</p>
+              <p class="error" hidden></p>
+            </div>
+
+            <div class="field span-2" data-field="emiratesId">
+              <label for="emiratesId">Emirates ID <span class="req" aria-hidden="true">*</span></label>
+              <input id="emiratesId" name="emiratesId" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="784-XXXX-XXXXXXX-X" aria-describedby="emiratesId-hint" required>
+              <p class="hint" id="emiratesId-hint">15 digits, format 784-XXXX-XXXXXXX-X.</p>
+              <p class="error" hidden></p>
+            </div>
+
+            <div class="field" data-field="phone">
+              <label for="phone">Phone number <span class="req" aria-hidden="true">*</span></label>
+              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="050 123 4567" required>
+              <p class="error" hidden></p>
+            </div>
+
+            <div class="field" data-field="email">
+              <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" spellcheck="false" required>
+              <p class="error" hidden></p>
+            </div>
+
+            <div class="field" data-field="monthlyIncome">
+              <label for="monthlyIncome">Monthly income (AED) <span class="req" aria-hidden="true">*</span></label>
+              <div class="money">
+                <span>AED</span>
+                <input id="monthlyIncome" name="monthlyIncome" inputmode="numeric" data-money autocomplete="off" required>
+              </div>
+              <p class="hint">Must be AED 3,000 or more.</p>
+              <p class="error" hidden></p>
+            </div>
+
+            <div class="field" data-field="loanAmount">
+              <label for="loanAmount">Required loan (AED) <span class="req" aria-hidden="true">*</span></label>
+              <div class="money">
+                <span>AED</span>
+                <input id="loanAmount" name="loanAmount" inputmode="numeric" data-money autocomplete="off" required>
+              </div>
+              <p class="error" hidden></p>
+            </div>
+
+            <fieldset class="field span-2" data-field="mashreqCustomer">
+              <legend>Are you a Mashreq customer? <span class="req" aria-hidden="true">*</span></legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="mashreqCustomer" value="yes" required> Yes</label>
+                <label class="choice"><input type="radio" name="mashreqCustomer" value="no"> No</label>
+              </div>
+              <p class="error" hidden></p>
+            </fieldset>
+          </div>
+
+          <div class="submit-bar">
+            <button type="submit" class="btn btn-solid btn-submit">Submit application</button>
+            <button type="button" class="text-btn" id="clear-form">Clear form</button>
+          </div>
+          <p class="fine-print">Your details stay in this browser. This form does not send an application to Mashreq.</p>
+        </form>
+
+        <section id="success" hidden>
+          <p class="eyebrow">Application recorded</p>
+          <h2 tabindex="-1" id="success-title">Your form is complete.</h2>
+          <p class="intro">Reference <strong id="ref"></strong>. Nothing was sent to a bank. Refreshing this page clears this confirmation.</p>
+          <dl class="summary" id="summary"></dl>
+          <button type="button" class="btn btn-solid btn-submit" id="again">Start another application</button>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <noscript>This form needs JavaScript to check the Emirates ID, phone number, and income.</noscript>
+  <script src="./loan.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
