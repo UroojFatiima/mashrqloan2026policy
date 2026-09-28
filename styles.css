@@ -573,7 +573,7 @@ input::placeholder {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  border: 1px solid #e4d9d0;
+  border: 2px solid #e4d9d0;
   border-radius: 4px;
   background: var(--white);
   font-weight: 700;
@@ -591,9 +591,9 @@ input::placeholder {
 }
 
 .choice:has(input:checked) {
-  background: var(--orange);
+  background: var(--white);
   border-color: var(--orange);
-  color: var(--white);
+  color: var(--ink);
 }
 
 .choice:focus-within,
