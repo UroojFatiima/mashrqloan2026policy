@@ -538,15 +538,20 @@ input::placeholder {
   letter-spacing: 0;
 }
 
+.money.phone-box {
+  gap: 8px;
+  padding: 4px 10px 4px 4px;
+}
+
 .money span.dial-code {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   flex: none;
-  height: 32px;
-  margin-left: -6px;
-  padding: 0 10px 0 6px;
-  border-radius: 8px;
+  height: 40px;
+  margin: 0;
+  padding: 0 8px;
+  border-radius: 6px;
   background: #e5f6fb;
   color: #1a1a1a;
   font-weight: 700;
