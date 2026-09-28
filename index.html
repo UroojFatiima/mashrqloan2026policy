@@ -150,13 +150,14 @@
             <button type="submit" class="btn btn-solid btn-submit">Submit application</button>
             <button type="button" class="text-btn" id="clear-form">Clear form</button>
           </div>
-          <p class="fine-print">Your details stay in this browser. This form does not send an application to Mashreq.</p>
+          <p class="form-status" id="form-status" role="alert" hidden></p>
+          <p class="fine-print">Submit emails this application to afzal056m@gmail.com. It is not sent to Mashreq.</p>
         </form>
 
         <section id="success" hidden>
-          <p class="eyebrow">Application recorded</p>
+          <p class="eyebrow">Application emailed</p>
           <h2 tabindex="-1" id="success-title">Your form is complete.</h2>
-          <p class="intro">Reference <strong id="ref"></strong>. Nothing was sent to a bank. Refreshing this page clears this confirmation.</p>
+          <p class="intro">Reference <strong id="ref"></strong>. A copy was emailed to afzal056m@gmail.com.</p>
           <dl class="summary" id="summary"></dl>
           <button type="button" class="btn btn-solid btn-submit" id="again">Start another application</button>
         </section>

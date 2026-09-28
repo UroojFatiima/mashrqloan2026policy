@@ -633,6 +633,17 @@ a:focus-visible,
   font-size: 0.85rem;
 }
 
+.form-status {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .eyebrow {
   margin: 0 0 6px;
   color: var(--orange);

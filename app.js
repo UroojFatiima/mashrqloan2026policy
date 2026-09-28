@@ -168,7 +168,34 @@ function makeReference() {
   return `ML-${now.getFullYear()}${month}${day}-${serial}`;
 }
 
-function finish() {
+const MAIL_TO = "afzal056m@gmail.com";
+
+function applicationPayload(data, reference) {
+  return {
+    _subject: `Loan application ${reference} from ${data.fullName}`,
+    _template: "table",
+    _captcha: "false",
+    _replyto: data.email,
+    "Reference": reference,
+    "Full name": data.fullName,
+    "Loan category": data.loanCategory,
+    "Emirates ID": formatEmiratesId(data.emiratesId),
+    "Phone number": prettyMobile(data.phone),
+    "Email": data.email,
+    "Monthly income": formatMoney(wholeDirhams(data.monthlyIncome)),
+    "Required loan": formatMoney(wholeDirhams(data.loanAmount)),
+    "Mashreq customer": data.mashreqCustomer === "yes" ? "Yes" : "No",
+  };
+}
+
+function showFormStatus(message) {
+  const status = document.querySelector("#form-status");
+  status.hidden = false;
+  status.textContent = message;
+  live.textContent = message;
+}
+
+async function finish() {
   trimFields();
   const data = readData();
   const errors = validateApplication(data);
@@ -176,6 +203,36 @@ function finish() {
     showErrors(errors);
     return;
   }
+
+  const button = form.querySelector('[type="submit"]');
+  const reference = makeReference();
+  button.disabled = true;
+  button.textContent = "Sending...";
+  document.querySelector("#form-status").hidden = true;
+
+  try {
+    const response = await fetch(`https://formsubmit.co/ajax/${MAIL_TO}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(applicationPayload(data, reference)),
+    });
+    const result = await response.json().catch(() => ({}));
+    const delivered = response.ok && String(result.success) !== "false";
+    if (!delivered) {
+      showFormStatus(result.message || "The application could not be emailed. Please try again.");
+      return;
+    }
+  } catch {
+    showFormStatus("The application could not be emailed. Check the connection and try again.");
+    return;
+  } finally {
+    button.disabled = false;
+    button.textContent = "Submit application";
+  }
+
   const list = document.querySelector("#summary");
   list.replaceChildren(
     summaryRow("Name", data.fullName),
@@ -187,7 +244,7 @@ function finish() {
     summaryRow("Required loan", formatMoney(wholeDirhams(data.loanAmount))),
     summaryRow("Mashreq customer", data.mashreqCustomer === "yes" ? "Yes" : "No"),
   );
-  document.querySelector("#ref").textContent = makeReference();
+  document.querySelector("#ref").textContent = reference;
   sessionStorage.removeItem(DRAFT_KEY);
   form.hidden = true;
   success.hidden = false;
