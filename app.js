@@ -330,6 +330,7 @@ async function finish() {
   form.hidden = true;
   success.hidden = false;
   document.querySelector("#success-title").focus();
+  success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function resetApplication() {

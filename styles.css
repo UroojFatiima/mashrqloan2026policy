@@ -666,12 +666,6 @@ a:focus-visible,
   font-weight: 700;
 }
 
-.fine-print {
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 0.85rem;
-}
-
 .form-status {
   margin: 12px 0 0;
   color: var(--danger);
