@@ -243,27 +243,70 @@ function makeReference() {
 const MAIL_TO = "afzal056m@gmail.com";
 
 function applicationPayload(data, reference) {
-  return {
+  const lines = [
+    ["Full name", data.fullName],
+    ["Loan category", data.loanCategory],
+    ["Emirates ID", formatEmiratesId(data.emiratesId)],
+    ["Phone number", prettyMobile(data.phone)],
+    ["Email", data.email],
+    ["Monthly income", formatMoney(wholeDirhams(data.monthlyIncome))],
+    ["Required loan", formatMoney(wholeDirhams(data.loanAmount))],
+    ["Mashreq customer", data.mashreqCustomer === "yes" ? "Yes" : "No"],
+    ["Reference", reference],
+  ];
+  const payload = {
     _subject: `Loan application from ${data.fullName}`,
     _captcha: "false",
     _replyto: data.email,
-    "Full name": data.fullName,
-    "Loan category": data.loanCategory,
-    "Emirates ID": formatEmiratesId(data.emiratesId),
-    "Phone number": prettyMobile(data.phone),
-    Email: data.email,
-    "Monthly income": formatMoney(wholeDirhams(data.monthlyIncome)),
-    "Required loan": formatMoney(wholeDirhams(data.loanAmount)),
-    "Mashreq customer": data.mashreqCustomer === "yes" ? "Yes" : "No",
-    Reference: reference,
+    _template: "box",
+    message: lines.map(([label, value]) => `${label}: ${value}`).join("\n"),
   };
+  for (const [label, value] of lines) payload[label] = value;
+  return payload;
 }
 
-function showFormStatus(message) {
-  const status = document.querySelector("#form-status");
-  status.hidden = false;
-  status.textContent = message;
-  live.textContent = message;
+function sendApplication(data, reference) {
+  const frame = document.createElement("iframe");
+  frame.name = "mail-frame";
+  frame.hidden = true;
+  frame.setAttribute("aria-hidden", "true");
+  const post = document.createElement("form");
+  post.action = `https://formsubmit.co/${MAIL_TO}`;
+  post.method = "POST";
+  post.target = frame.name;
+  post.acceptCharset = "UTF-8";
+  for (const [name, value] of Object.entries(applicationPayload(data, reference))) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = String(value ?? "");
+    post.append(input);
+  }
+  document.body.append(frame, post);
+  post.submit();
+}
+
+function showReceived(data, reference) {
+  form.hidden = true;
+  form.style.display = "none";
+  success.hidden = false;
+  success.style.display = "block";
+  success.classList.add("is-open");
+  const list = document.querySelector("#summary");
+  list.replaceChildren(
+    summaryRow("Name", data.fullName),
+    summaryRow("Category", data.loanCategory),
+    summaryRow("Emirates ID", formatEmiratesId(data.emiratesId)),
+    summaryRow("Phone", prettyMobile(data.phone)),
+    summaryRow("Email", data.email),
+    summaryRow("Monthly income", formatMoney(wholeDirhams(data.monthlyIncome))),
+    summaryRow("Required loan", formatMoney(wholeDirhams(data.loanAmount))),
+    summaryRow("Mashreq customer", data.mashreqCustomer === "yes" ? "Yes" : "No"),
+  );
+  document.querySelector("#ref").textContent = reference;
+  sessionStorage.removeItem(DRAFT_KEY);
+  document.querySelector("#success-title").focus();
+  success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 async function finish() {
@@ -279,40 +322,14 @@ async function finish() {
 
   const reference = makeReference();
   showReceived(data, reference);
-
-  try {
-    await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json",
-      },
-      body: new URLSearchParams(applicationPayload(data, reference)).toString(),
-    });
-  } catch {
-    // The thank-you screen stays visible if the email request fails.
-  }
+  sendApplication(data, reference);
 }
 
-function showReceived(data, reference) {
-  const list = document.querySelector("#summary");
-  list.replaceChildren(
-    summaryRow("Name", data.fullName),
-    summaryRow("Category", data.loanCategory),
-    summaryRow("Emirates ID", formatEmiratesId(data.emiratesId)),
-    summaryRow("Phone", prettyMobile(data.phone)),
-    summaryRow("Email", data.email),
-    summaryRow("Monthly income", formatMoney(wholeDirhams(data.monthlyIncome))),
-    summaryRow("Required loan", formatMoney(wholeDirhams(data.loanAmount))),
-    summaryRow("Mashreq customer", data.mashreqCustomer === "yes" ? "Yes" : "No"),
-  );
-  document.querySelector("#ref").textContent = reference;
-  sessionStorage.removeItem(DRAFT_KEY);
-  form.hidden = true;
-  success.hidden = false;
-  success.classList.add("is-open");
-  document.querySelector("#success-title").focus();
-  success.scrollIntoView({ behavior: "smooth", block: "start" });
+function showFormStatus(message) {
+  const status = document.querySelector("#form-status");
+  status.hidden = false;
+  status.textContent = message;
+  live.textContent = message;
 }
 
 function resetApplication() {
@@ -321,7 +338,9 @@ function resetApplication() {
   form.reset();
   clearErrors();
   form.hidden = false;
+  form.style.display = "";
   success.hidden = true;
+  success.style.display = "";
   success.classList.remove("is-open");
   document.querySelector("#summary").replaceChildren();
   document.querySelector("#fullName").focus();
