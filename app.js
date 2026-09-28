@@ -344,17 +344,6 @@ function showReceived(data, reference) {
   success.hidden = false;
   success.style.display = "block";
   success.classList.add("is-open");
-  const list = document.querySelector("#summary");
-  list.replaceChildren(
-    summaryRow("Name", data.fullName),
-    summaryRow("Category", data.loanCategory),
-    summaryRow("Emirates ID", formatEmiratesId(data.emiratesId)),
-    summaryRow("Phone", prettyMobile(data.phone)),
-    summaryRow("Email", data.email),
-    summaryRow("Monthly income", formatMoney(wholeDirhams(data.monthlyIncome))),
-    summaryRow("Required loan", formatMoney(wholeDirhams(data.loanAmount))),
-    summaryRow("Mashreq customer", data.mashreqCustomer === "yes" ? "Yes" : "No"),
-  );
   document.querySelector("#ref").textContent = reference;
   sessionStorage.removeItem(DRAFT_KEY);
   document.querySelector("#success-title").focus();
@@ -401,6 +390,7 @@ function showFormStatus(message) {
   const status = document.querySelector("#form-status");
   status.hidden = false;
   status.classList.add("is-open");
+  status.style.display = "flex";
   status.textContent = message;
   live.textContent = message;
   status.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -416,7 +406,7 @@ function resetApplication() {
   success.hidden = true;
   success.style.display = "";
   success.classList.remove("is-open");
-  document.querySelector("#summary").replaceChildren();
+  document.querySelector("#summary")?.replaceChildren();
   hideFormStatus();
   const button = form.querySelector("button[type='submit']");
   button.disabled = false;
