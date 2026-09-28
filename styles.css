@@ -620,6 +620,9 @@ input::placeholder {
   height: 100%;
   margin: 0;
   min-height: 0;
+  border: 0;
+  outline: none;
+  box-shadow: none;
   cursor: pointer;
 }
 
@@ -629,7 +632,6 @@ input::placeholder {
   color: var(--ink);
 }
 
-.choice:focus-within,
 .money:focus-within,
 input:focus-visible,
 select:focus-visible,
@@ -641,6 +643,7 @@ a:focus-visible,
 }
 
 .choice input:focus,
+.choice:focus-within,
 .money input:focus-visible {
   outline: none;
 }
