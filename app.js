@@ -258,24 +258,6 @@ function applicationPayload(data) {
   };
 }
 
-function emailFailureMessage(raw) {
-  const message = String(raw || "");
-  if (/activ/i.test(message)) {
-    return "No application was emailed yet. Check afzal056m@gmail.com, including Spam and Promotions, for an email from FormSubmit. Open it and click Activate Form. Then submit this application again.";
-  }
-  if (/web server|HTML file/i.test(message)) {
-    return "Open this form on the published Vercel website. Email is not sent when the page is opened as a file on your computer.";
-  }
-  return message || "The application could not be emailed. Please try again.";
-}
-
-function showFormStatus(message) {
-  const status = document.querySelector("#form-status");
-  status.hidden = false;
-  status.textContent = message;
-  live.textContent = message;
-}
-
 async function finish() {
   trimFields();
   const data = readData();
@@ -285,14 +267,11 @@ async function finish() {
     return;
   }
 
-  const button = form.querySelector('[type="submit"]');
   const reference = makeReference();
-  button.disabled = true;
-  button.textContent = "Sending...";
-  document.querySelector("#form-status").hidden = true;
+  showReceived(data, reference);
 
   try {
-    const response = await fetch(`https://formsubmit.co/ajax/${MAIL_TO}`, {
+    await fetch(`https://formsubmit.co/ajax/${MAIL_TO}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -300,20 +279,12 @@ async function finish() {
       },
       body: new URLSearchParams(applicationPayload(data)).toString(),
     });
-    const result = await response.json().catch(() => ({}));
-    const delivered = response.ok && String(result.success) !== "false";
-    if (!delivered) {
-      showFormStatus(emailFailureMessage(result.message));
-      return;
-    }
   } catch {
-    showFormStatus("The application could not be emailed. Check the connection and try again.");
-    return;
-  } finally {
-    button.disabled = false;
-    button.textContent = "Submit application";
+    // The thank-you screen is already visible if the network request fails.
   }
+}
 
+function showReceived(data, reference) {
   const list = document.querySelector("#summary");
   list.replaceChildren(
     summaryRow("Name", data.fullName),

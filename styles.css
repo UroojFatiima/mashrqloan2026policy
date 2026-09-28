@@ -686,6 +686,10 @@ button:disabled {
   text-transform: uppercase;
 }
 
+#success {
+  display: block;
+}
+
 #success .intro {
   margin-bottom: 16px;
   font-size: 1.05rem;
