@@ -9,7 +9,6 @@ vm.runInContext(fs.readFileSync(new URL("./loan.js", import.meta.url), "utf8"), 
 
 const {
   LIMITS,
-  emiratesIdBody,
   formatEmiratesId,
   formatUaeMobile,
   mobileBody,
@@ -35,12 +34,11 @@ function validApplication(overrides = {}) {
   };
 }
 
-test("formats a 15-digit Emirates ID as 784-XXXX-XXXXXXX-X", () => {
+test("formats a 15-digit Emirates ID as XXX-XXXX-XXXXXXX-X", () => {
   assert.equal(formatEmiratesId("784199212345671"), "784-1992-1234567-1");
-  assert.equal(formatEmiratesId(""), "784-");
-  assert.equal(formatEmiratesId("199212345671"), "784-1992-1234567-1");
-  assert.equal(emiratesIdBody("784-1992-1234567-1"), "1992-1234567-1");
-  assert.equal(emiratesIdBody(""), "");
+  assert.equal(formatEmiratesId("786756464545454"), "786-7564-6454545-4");
+  assert.equal(formatEmiratesId("78675646454545499"), "786-7564-6454545-4");
+  assert.equal(formatEmiratesId(""), "");
   assert.equal(isValidEmiratesId("784-1992-1234567-1"), true);
   assert.equal(isValidEmiratesId("123-1992-1234567-1"), false);
   assert.equal(isValidEmiratesId("784-1992-123456-1"), false);

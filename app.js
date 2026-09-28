@@ -1,6 +1,5 @@
 const {
   LOAN_CATEGORIES,
-  emiratesIdBody,
   formatEmiratesId,
   formatMoney,
   groupThousands,
@@ -131,7 +130,7 @@ function formatKeepingCaret(input, formatter) {
 }
 
 function formatEmiratesIdField(input) {
-  formatKeepingCaret(input, emiratesIdBody);
+  formatKeepingCaret(input, formatEmiratesId);
 }
 
 function formatPhoneField(input) {
@@ -160,7 +159,7 @@ function restore() {
   try {
     const data = JSON.parse(raw);
     if (!data || typeof data !== "object") return;
-    data.emiratesId = emiratesIdBody(data.emiratesId ?? "");
+    if (data.emiratesId) data.emiratesId = formatEmiratesId(data.emiratesId);
     data.phone = mobileBody(data.phone ?? "");
     if (data.monthlyIncome) data.monthlyIncome = groupThousands(data.monthlyIncome);
     if (data.loanAmount) data.loanAmount = groupThousands(data.loanAmount);
@@ -397,7 +396,7 @@ function bindForm() {
     const target = event.target;
     if (target instanceof HTMLInputElement && target.dataset.money != null) onMoneyBlur(target);
     if (target instanceof HTMLInputElement && target.name === "phone") target.value = mobileBody(target.value);
-    if (target instanceof HTMLInputElement && target.name === "emiratesId") target.value = emiratesIdBody(target.value);
+    if (target instanceof HTMLInputElement && target.name === "emiratesId") target.value = formatEmiratesId(target.value);
   });
 
   form.addEventListener("submit", (event) => {
