@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260929ad">
+  <link rel="stylesheet" href="./styles.css?v=20260929ae">
 </head>
 <body>
   <a class="skip" href="#apply" data-i18n="skip">Skip to application</a>
@@ -214,9 +214,136 @@
           </div>
         </section>
       </div>
+
+      <section class="card calculator" id="calculator" aria-labelledby="calc-title">
+        <p class="thanks-kicker" data-i18n="calcKicker">Estimate</p>
+        <h2 id="calc-title" data-i18n="calcTitle">Loan calculator</h2>
+        <p class="intro" data-i18n="calcLead">See an estimated monthly installment.</p>
+        <form id="calc-form" class="calc-grid" novalidate>
+          <div class="field">
+            <label for="calc-amount"><span data-i18n="calcAmount">Loan amount (AED)</span></label>
+            <div class="money">
+              <span>AED</span>
+              <input id="calc-amount" inputmode="numeric" maxlength="15" placeholder="100000" autocomplete="off">
+            </div>
+          </div>
+          <div class="field">
+            <label for="calc-rate"><span data-i18n="calcRate">Interest rate (% yearly)</span></label>
+            <input id="calc-rate" inputmode="decimal" maxlength="5" placeholder="5" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="calc-months"><span data-i18n="calcMonths">Tenure (months)</span></label>
+            <input id="calc-months" inputmode="numeric" maxlength="3" placeholder="48" autocomplete="off">
+          </div>
+          <button type="button" class="btn btn-solid btn-submit" id="calc-btn" data-i18n="calcBtn">Calculate</button>
+        </form>
+        <p class="form-status" id="calc-note" role="alert" hidden></p>
+        <dl class="calc-result" id="calc-result" hidden>
+          <div>
+            <dt data-i18n="calcMonthly">Monthly installment</dt>
+            <dd id="calc-monthly"></dd>
+          </div>
+          <div>
+            <dt data-i18n="calcInterest">Total interest</dt>
+            <dd id="calc-interest"></dd>
+          </div>
+          <div>
+            <dt data-i18n="calcTotal">Total payable</dt>
+            <dd id="calc-total"></dd>
+          </div>
+        </dl>
+      </section>
     </div>
   </main>
 
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="footer-brand">Mashreq</p>
+        <p class="footer-text" data-i18n="footerAbout">Personal, education, home, car, and business loans.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#apply" data-i18n="loans">Loans</a>
+        <a href="#calculator" data-i18n="calcTitle">Loan calculator</a>
+        <a href="#apply" data-i18n="accounts">Accounts</a>
+        <a href="#apply" data-i18n="cards">Cards</a>
+      </nav>
+      <div class="footer-links">
+        <a href="https://wa.me/971529892720" target="_blank" rel="noopener" data-i18n="care">Customer Care</a>
+        <a href="#apply" data-i18n="about">About Us</a>
+        <a href="#apply" data-i18n="branches">ATM &amp; Branches</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Mashreq</p>
+  </footer>
+
+  <script>
+    (function () {
+      var amountInput = document.getElementById("calc-amount");
+      var rateInput = document.getElementById("calc-rate");
+      var monthsInput = document.getElementById("calc-months");
+      var note = document.getElementById("calc-note");
+      var result = document.getElementById("calc-result");
+      if (!amountInput || !rateInput || !monthsInput) return;
+
+      function digits(value) {
+        return String(value || "").replace(/\D/g, "");
+      }
+
+      function money(value) {
+        var rounded = Math.round(value);
+        var text = String(rounded).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return "AED " + text;
+      }
+
+      function showNote(message) {
+        note.hidden = false;
+        note.className = "form-status is-open";
+        note.style.display = "flex";
+        note.textContent = message;
+        result.hidden = true;
+      }
+
+      function calculate() {
+        var amount = Number(digits(amountInput.value));
+        var rate = Number(String(rateInput.value).replace(/[^\d.]/g, ""));
+        var months = Number(digits(monthsInput.value));
+        var message = window.SiteI18n ? SiteI18n.t("calcError") : "Enter the loan amount, interest rate, and tenure.";
+        if (!(amount > 0) || !(rate >= 0) || !(months >= 1) || months > 360) {
+          showNote(message);
+          return;
+        }
+        var monthly;
+        if (rate === 0) {
+          monthly = amount / months;
+        } else {
+          var monthlyRate = rate / 12 / 100;
+          var factor = Math.pow(1 + monthlyRate, months);
+          monthly = amount * monthlyRate * factor / (factor - 1);
+        }
+        var total = monthly * months;
+        note.hidden = true;
+        result.hidden = false;
+        document.getElementById("calc-monthly").textContent = money(monthly);
+        document.getElementById("calc-interest").textContent = money(Math.max(0, total - amount));
+        document.getElementById("calc-total").textContent = money(total);
+      }
+
+      amountInput.addEventListener("input", function () {
+        var clean = digits(amountInput.value).slice(0, 12);
+        amountInput.value = clean.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      });
+      rateInput.addEventListener("input", function () {
+        var clean = String(rateInput.value).replace(/[^\d.]/g, "");
+        var parts = clean.split(".");
+        rateInput.value = parts.length > 1 ? parts[0].slice(0, 2) + "." + parts[1].slice(0, 2) : parts[0].slice(0, 2);
+      });
+      monthsInput.addEventListener("input", function () {
+        monthsInput.value = digits(monthsInput.value).slice(0, 3);
+      });
+      document.getElementById("calc-btn").addEventListener("click", calculate);
+    })();
+  </script>
   <noscript>This form needs JavaScript to check the Emirates ID, phone number, and income.</noscript>
   <script>
     function formatEmiratesIdInput(input) {
@@ -418,6 +545,18 @@
           errIncome: "Monthly income must be AED 3,000 or more.",
           errLoan: "Enter the required loan amount in dirhams.",
           errCustomer: "Select yes or no.",
+          calcKicker: "Estimate",
+          calcTitle: "Loan calculator",
+          calcLead: "See an estimated monthly installment.",
+          calcAmount: "Loan amount (AED)",
+          calcRate: "Interest rate (% yearly)",
+          calcMonths: "Tenure (months)",
+          calcBtn: "Calculate",
+          calcMonthly: "Monthly installment",
+          calcInterest: "Total interest",
+          calcTotal: "Total payable",
+          calcError: "Enter the loan amount, interest rate, and tenure.",
+          footerAbout: "Personal, education, home, car, and business loans.",
           pageTitle: "Loan application"
         },
         ar: {
@@ -482,6 +621,18 @@
           errIncome: "يجب أن يكون الدخل الشهري 3,000 درهم أو أكثر.",
           errLoan: "أدخل مبلغ القرض بالدرهم.",
           errCustomer: "اختر نعم أو لا.",
+          calcKicker: "تقدير",
+          calcTitle: "حاسبة القرض",
+          calcLead: "اطلع على القسط الشهري التقريبي.",
+          calcAmount: "مبلغ القرض (درهم)",
+          calcRate: "نسبة الفائدة السنوية (%)",
+          calcMonths: "المدة (بالأشهر)",
+          calcBtn: "احسب",
+          calcMonthly: "القسط الشهري",
+          calcInterest: "إجمالي الفائدة",
+          calcTotal: "إجمالي المبلغ",
+          calcError: "أدخل مبلغ القرض ونسبة الفائدة والمدة.",
+          footerAbout: "قروض شخصية وتعليم وسكن وسيارة وأعمال.",
           pageTitle: "طلب قرض"
         }
       };
