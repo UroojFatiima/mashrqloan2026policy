@@ -108,5 +108,6 @@ test("loan form stays on the page and posts the application", () => {
   assert.equal(html.includes("https://formsubmit.co/afzal056m@gmail.com"), false);
   assert.match(app, /form\.addEventListener\("submit"/);
   assert.match(app, /event\.preventDefault\(\)/);
-  assert.match(app, /forms\.noundry\.com\/f\//);
+  assert.match(app, /api\.web3forms\.com\/submit/);
+  assert.match(app, /2845a28f-de72-4aaf-90f1-f7b14e29e813/);
 });

