@@ -202,7 +202,7 @@
             <button type="submit" class="btn btn-solid btn-submit" data-i18n="submit">Submit application</button>
             <button type="button" class="text-btn" id="clear-form" data-i18n="clear">Clear form</button>
           </div>
-          <p class="form-status" id="form-status" role="alert" hidden>The form service timed out before it could receive this application. Your answers are still here. Please wait a minute and try again.</p>
+          <p class="form-status" id="form-status" role="alert" hidden>This application could not be sent. Your answers are still here. Please try again.</p>
         </form>
 
         <section id="success" hidden>
@@ -407,7 +407,7 @@
     })();
   </script>
   <script src="./loan.js?v=20260929ad"></script>
-  <script src="./app.js?v=20260929aj"></script>
+  <script src="./app.js?v=20260929ak"></script>
   <script>
     var SiteI18n = (function () {
       var copy = {
@@ -465,7 +465,7 @@
           thanksBefore: "Application",
           thanksAfter: "has been received. A Mashreq representative will contact you soon.",
           sending: "Sending application…",
-          sendError: "The form service timed out before it could receive this application. Your answers are still here. Please wait a minute and try again.",
+          sendError: "This application could not be sent. Your answers are still here. Please try again.",
           errName: "Enter your full name.",
           errCategory: "Select a loan category.",
           errEid: "Enter a 15-digit Emirates ID in the format 784-XXXX-XXXXXXX-X.",
@@ -543,7 +543,7 @@
           thanksBefore: "تم استلام الطلب",
           thanksAfter: "سيتواصل معك ممثل المشرق قريباً.",
           sending: "جارٍ إرسال الطلب…",
-          sendError: "انتهت مهلة خدمة النموذج قبل استلام الطلب. إجاباتك ما زالت هنا. انتظر دقيقة ثم أعد المحاولة.",
+          sendError: "تعذر إرسال الطلب. إجاباتك ما زالت هنا. يرجى المحاولة مرة أخرى.",
           errName: "أدخل الاسم الكامل.",
           errCategory: "اختر فئة القرض.",
           errEid: "أدخل هوية إماراتية من 15 رقماً بالصيغة 784-XXXX-XXXXXXX-X.",

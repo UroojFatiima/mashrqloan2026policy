@@ -245,7 +245,7 @@ function makeReference() {
 const MAIL_TO = "afzal056m@gmail.com";
 const WEB3FORMS_KEY = "";
 const SUCCESS_KEY = "mashreq-loan-success";
-const SEND_ERROR = "The form service timed out before it could receive this application. Your answers are still here. Please wait a minute and try again.";
+const SEND_ERROR = "This application could not be sent. Your answers are still here. Please try again.";
 const SEND_TIMEOUT_MS = 20000;
 
 function applicationPayload(data, reference) {
@@ -261,10 +261,9 @@ function applicationPayload(data, reference) {
     ["Reference", reference],
   ];
   const payload = {
-    _subject: `Loan application from ${data.fullName}`,
-    _captcha: "false",
-    _replyto: data.email,
-    _template: "box",
+    name: data.fullName,
+    email: data.email,
+    subject: `Loan application from ${data.fullName}`,
     message: lines.map(([label, value]) => `${label}: ${value}`).join("\n"),
   };
   for (const [label, value] of lines) payload[label] = value;
@@ -302,7 +301,7 @@ async function sendApplication(data, reference) {
   const controller = new AbortController();
   const timer = window.setTimeout(() => controller.abort(), SEND_TIMEOUT_MS);
   try {
-    const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
+    const response = await fetch(`https://forms.noundry.com/f/${encodeURIComponent(MAIL_TO)}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -311,21 +310,16 @@ async function sendApplication(data, reference) {
       body: JSON.stringify(applicationPayload(data, reference)),
       signal: controller.signal,
     });
-    if (response.status === 522 || response.status === 524 || response.status === 504 || response.status === 503) {
-      throw new Error("timeout");
-    }
     const result = await response.json().catch(() => ({}));
     const accepted = result.success === true || result.success === "true";
     if (!response.ok || !accepted) {
       const message = typeof result.message === "string" ? result.message.trim() : "";
-      if (!message || /server error/i.test(message)) throw new Error("timeout");
-      throw new Error(message);
+      throw new Error(message || "send-failed");
     }
   } catch (error) {
-    if (error instanceof Error && error.message !== "timeout" && error.name !== "AbortError" && !(error instanceof TypeError)) {
-      throw error;
-    }
-    throw new Error("timeout");
+    if (error instanceof DOMException && error.name === "AbortError") throw new Error("timeout");
+    if (error instanceof TypeError) throw new Error("timeout");
+    throw error;
   } finally {
     window.clearTimeout(timer);
   }

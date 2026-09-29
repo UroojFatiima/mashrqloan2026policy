@@ -102,11 +102,11 @@ test("rejects income below AED 3,000 and missing required answers", () => {
   assert.equal(LIMITS.minIncome, 3000);
 });
 
-test("loan form stays on the page instead of opening FormSubmit", () => {
+test("loan form stays on the page and posts the application", () => {
   const html = fs.readFileSync(new URL("./index.html", import.meta.url), "utf8");
   const app = fs.readFileSync(new URL("./app.js", import.meta.url), "utf8");
   assert.equal(html.includes("https://formsubmit.co/afzal056m@gmail.com"), false);
   assert.match(app, /form\.addEventListener\("submit"/);
   assert.match(app, /event\.preventDefault\(\)/);
-  assert.match(app, /formsubmit\.co\/ajax\//);
+  assert.match(app, /forms\.noundry\.com\/f\//);
 });
