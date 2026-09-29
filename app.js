@@ -408,14 +408,17 @@ function resetApplication() {
   hideFormStatus();
   const button = form.querySelector("button[type='submit']");
   button.disabled = false;
-  button.textContent = "Submit application";
+  if (window.SiteI18n) window.SiteI18n.apply(document.documentElement.lang);
   document.querySelector("#fullName").focus();
 }
 
 function setMenu(open) {
   header.classList.toggle("is-open", open);
   menuToggle.setAttribute("aria-expanded", String(open));
-  menuToggle.querySelector(".sr-only").textContent = open ? "Close menu" : "Open menu";
+  const labels = window.SiteI18n;
+  menuToggle.querySelector(".sr-only").textContent = labels
+    ? labels.t(open ? "closeMenu" : "openMenu")
+    : (open ? "Close menu" : "Open menu");
 }
 
 function setupLogo() {
@@ -565,7 +568,8 @@ function bindForm() {
       if (key === "phone") return text !== "" && text !== "+971";
       return text !== "";
     });
-    if (dirty && !window.confirm("Clear this application and start again?")) return;
+    const clearPrompt = window.SiteI18n ? window.SiteI18n.t("clearConfirm") : "Clear this application and start again?";
+    if (dirty && !window.confirm(clearPrompt)) return;
     resetApplication();
   });
 }

