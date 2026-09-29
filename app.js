@@ -415,6 +415,9 @@ function resetApplication() {
 function setMenu(open) {
   header.classList.toggle("is-open", open);
   menuToggle.setAttribute("aria-expanded", String(open));
+  document.body.classList.toggle("menu-open", open);
+  const backdrop = document.querySelector("#nav-backdrop");
+  if (backdrop) backdrop.hidden = !open;
   const labels = window.SiteI18n;
   menuToggle.querySelector(".sr-only").textContent = labels
     ? labels.t(open ? "closeMenu" : "openMenu")
@@ -438,12 +441,14 @@ function setupLogo() {
 }
 
 function setupChrome() {
+  const closeMenu = () => setMenu(false);
   menuToggle.addEventListener("click", () => {
     setMenu(!header.classList.contains("is-open"));
   });
-
-  header.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => setMenu(false));
+  document.querySelector("#drawer-close")?.addEventListener("click", closeMenu);
+  document.querySelector("#nav-backdrop")?.addEventListener("click", closeMenu);
+  document.querySelector("#primary-nav")?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
   });
 
   document.addEventListener("keydown", (event) => {
@@ -575,6 +580,11 @@ function bindForm() {
 }
 
 function init() {
+  try {
+    setupChrome();
+  } catch {
+    // The form still works if the header menu cannot start.
+  }
   bindForm();
   try {
     if (restoreSent()) return;
@@ -582,7 +592,6 @@ function init() {
       fillSelect("loanCategory", LOAN_CATEGORIES, "Select a category");
     }
     setupLogo();
-    setupChrome();
     restore();
   } catch {
     // Field formatting stays active even if the header fails to start.

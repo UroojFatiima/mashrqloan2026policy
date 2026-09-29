@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260929ab">
+  <link rel="stylesheet" href="./styles.css?v=20260929ac">
 </head>
 <body>
   <a class="skip" href="#apply" data-i18n="skip">Skip to application</a>
@@ -48,7 +48,12 @@
         <span class="logo-fallback">Logo</span>
       </a>
 
+      <button type="button" class="nav-backdrop" id="nav-backdrop" hidden aria-label="Close menu"></button>
       <nav id="primary-nav" class="primary-nav" aria-label="Primary">
+        <div class="drawer-head">
+          <span data-i18n="menu">Menu</span>
+          <button type="button" class="drawer-close" id="drawer-close" data-i18n-aria="closeMenu" aria-label="Close menu">&times;</button>
+        </div>
         <a href="#apply" data-i18n="accounts">Accounts</a>
         <a href="#apply" data-i18n="cards">Cards</a>
         <a href="#apply" aria-current="page" data-i18n="loans">Loans</a>
@@ -316,8 +321,8 @@
       }, true);
     })();
   </script>
-  <script src="./loan.js?v=20260929ab"></script>
-  <script src="./app.js?v=20260929ab"></script>
+  <script src="./loan.js?v=20260929ac"></script>
+  <script src="./app.js?v=20260929ac"></script>
   <script>
     var SiteI18n = (function () {
       var copy = {
@@ -331,6 +336,7 @@
           branches: "ATM & Branches",
           care: "Customer Care",
           openMenu: "Open menu",
+          menu: "Menu",
           closeMenu: "Close menu",
           accounts: "Accounts",
           cards: "Cards",
@@ -391,6 +397,7 @@
           about: "من نحن",
           branches: "الصراف والفروع",
           care: "خدمة العملاء",
+          menu: "القائمة",
           openMenu: "فتح القائمة",
           closeMenu: "إغلاق القائمة",
           accounts: "الحسابات",
