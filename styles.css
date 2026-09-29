@@ -1119,7 +1119,7 @@ button:disabled {
 .footer-logo img {
   display: block;
   width: auto;
-  max-width: min(148px, 46vw);
+  max-width: min(96px, 28vw);
   height: auto;
 }
 
