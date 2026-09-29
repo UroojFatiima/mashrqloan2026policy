@@ -1111,11 +1111,19 @@ button:disabled {
   gap: 24px;
 }
 
-.footer-brand {
-  margin: 0 0 8px;
-  color: var(--orange);
-  font-size: 1.35rem;
-  font-weight: 800;
+.footer-logo {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.footer-logo img {
+  display: block;
+  width: auto;
+  max-width: min(220px, 72vw);
+  height: auto;
 }
 
 .footer-text {
