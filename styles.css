@@ -190,31 +190,16 @@ h2 {
 .care {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   border: 1px solid #d9d3cc;
   background: var(--white);
   border-radius: 4px;
-  padding: 4px 10px;
+  padding: 6px 10px;
   text-transform: none;
   letter-spacing: 0;
   font-size: 13px;
   font-weight: 600;
-  white-space: normal;
-}
-
-.care-copy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  line-height: 1.15;
-  text-align: start;
-}
-
-.care-number {
-  color: var(--orange);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .care svg {
@@ -338,11 +323,15 @@ h2 {
   overflow: auto;
   background: var(--white);
   transform: translateX(-105%);
-  transition: transform 0.22s ease;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.22s ease, visibility 0.22s ease;
 }
 
 .site-header.is-open .primary-nav {
   transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
   box-shadow: 12px 0 36px rgba(40, 20, 0, 0.16);
 }
 
@@ -1035,6 +1024,8 @@ button:disabled {
     padding: 0;
     background: transparent;
     transform: none;
+    visibility: visible;
+    pointer-events: auto;
     box-shadow: none;
   }
 

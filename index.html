@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ff5e00">
   <title>Loan application</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='2' fill='%23ff5e00'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css?v=20260929ac">
+  <link rel="stylesheet" href="./styles.css?v=20260929ad">
 </head>
 <body>
   <a class="skip" href="#apply" data-i18n="skip">Skip to application</a>
@@ -29,10 +29,7 @@
         <a class="util-extra" href="#apply" data-i18n="branches">ATM &amp; Branches</a>
         <a class="care" href="https://wa.me/971529892720" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 3C7.31 3 3.48 6.82 3.48 11.54c0 1.5.4 2.96 1.15 4.24L3 21l5.38-1.4a8.6 8.6 0 0 0 3.66.8h.01c4.72 0 8.56-3.82 8.56-8.54C20.6 6.82 16.76 3 12.04 3zm4.9 12.16c-.2.58-1.18 1.1-1.64 1.16-.42.06-.96.08-1.55-.1-.36-.1-.82-.26-1.41-.5-2.48-1.07-4.1-3.56-4.22-3.73-.12-.16-1-1.33-1-2.54s.63-1.8.86-2.05c.22-.24.48-.3.64-.3h.46c.15 0 .34-.05.53.4.2.48.68 1.66.74 1.78.06.12.1.26.02.42-.08.16-.12.26-.24.4-.12.14-.25.31-.36.42-.12.12-.24.24-.1.46.14.22.62 1.02 1.33 1.66.92.82 1.69 1.08 1.93 1.2.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.1.06.58-.14 1.16z"/></svg>
-          <span class="care-copy">
-            <span data-i18n="care">Customer Care</span>
-            <span class="care-number" dir="ltr">+971 52 989 2720</span>
-          </span>
+          <span data-i18n="care">Customer Care</span>
         </a>
       </div>
     </div>
@@ -80,6 +77,39 @@
       <input id="q" type="search" placeholder="Search" data-i18n-placeholder="search" enterkeyhint="search">
     </form>
   </header>
+  <script>
+    (function () {
+      var header = document.getElementById("site-header");
+      var toggle = document.getElementById("menu-toggle");
+      var backdrop = document.getElementById("nav-backdrop");
+      var closer = document.getElementById("drawer-close");
+      var nav = document.getElementById("primary-nav");
+      if (!header || !toggle || !nav) return;
+      function setOpen(open) {
+        header.classList.toggle("is-open", open);
+        document.body.classList.toggle("menu-open", open);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        if (backdrop) {
+          if (open) backdrop.removeAttribute("hidden");
+          else backdrop.setAttribute("hidden", "");
+        }
+      }
+      toggle.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        setOpen(!header.classList.contains("is-open"));
+      });
+      if (backdrop) backdrop.addEventListener("click", function () { setOpen(false); });
+      if (closer) closer.addEventListener("click", function () { setOpen(false); });
+      var links = nav.getElementsByTagName("a");
+      for (var i = 0; i < links.length; i += 1) {
+        links[i].addEventListener("click", function () { setOpen(false); });
+      }
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") setOpen(false);
+      });
+    })();
+  </script>
 
   <div class="banner" id="banner">
     <p data-i18n-html="banner">Apply for a <strong>Mashreq loan</strong> for personal, education, home, car, or business needs. <a href="#apply">Apply now</a></p>
@@ -321,8 +351,8 @@
       }, true);
     })();
   </script>
-  <script src="./loan.js?v=20260929ac"></script>
-  <script src="./app.js?v=20260929ac"></script>
+  <script src="./loan.js?v=20260929ad"></script>
+  <script src="./app.js?v=20260929ad"></script>
   <script>
     var SiteI18n = (function () {
       var copy = {

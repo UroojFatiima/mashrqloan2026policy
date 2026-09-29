@@ -441,16 +441,6 @@ function setupLogo() {
 }
 
 function setupChrome() {
-  const closeMenu = () => setMenu(false);
-  menuToggle.addEventListener("click", () => {
-    setMenu(!header.classList.contains("is-open"));
-  });
-  document.querySelector("#drawer-close")?.addEventListener("click", closeMenu);
-  document.querySelector("#nav-backdrop")?.addEventListener("click", closeMenu);
-  document.querySelector("#primary-nav")?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeMenu);
-  });
-
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setMenu(false);
   });
